@@ -1,3 +1,15 @@
 [submodule "Assets/Refs/UIDock_Core"]
 	path = Assets/Refs/UIDock_Core
 	url = https://github.com/Reavenk/UIDock_Core.git
+[submodule "Assets/Refs/DropdownMenu_Core"]
+	path = Assets/Refs/DropdownMenu_Core
+	url = https://github.com/Reavenk/DropdownMenu_Core.git
+[submodule "Assets/Refs/Tree_Core"]
+	path = Assets/Refs/Tree_Core
+	url = https://github.com/Reavenk/Tree_Core.git
+[submodule "Assets/Refs/UISplitter_Core"]
+	path = Assets/Refs/UISplitter_Core
+	url = https://github.com/Reavenk/UISplitter_Core
+[submodule "Assets/Refs/UILayout_Core"]
+	path = Assets/Refs/UILayout_Core
+	url = https://github.com/Reavenk/UILayout_Core.git

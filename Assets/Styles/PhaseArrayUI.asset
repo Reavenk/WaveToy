@@ -1,0 +1,202 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebcd94d15ce87b6459704e50a83ebd04, type: 3}
+  m_Name: PhaseArrayUI
+  m_EditorClassIdentifier: 
+  buttonStyle:
+    transition: 2
+    normalSprite: {fileID: 21300000, guid: 529452adea57b1341a558cbc0a14e246, type: 3}
+    spriteState:
+      m_HighlightedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_PressedSprite: {fileID: 21300000, guid: 8f2fcabd5f0b4304790052d63cbb03f5,
+        type: 3}
+      m_SelectedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_DisabledSprite: {fileID: 21300000, guid: 82b13bf8f12468348b55cfa0adb82794,
+        type: 3}
+    normalColor: {r: 1, g: 1, b: 1, a: 1}
+    colorStates:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+  buttonFont:
+    font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    fontSize: 20
+    color: {r: 0, g: 0, b: 0, a: 1}
+  minButtonSize: {x: 50, y: 50}
+  buttonPadding:
+    left: 10
+    top: 20
+    right: 10
+    bot: 25
+  headerTextAttrib:
+    font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    fontSize: 14
+    color: {r: 0, g: 0, b: 0, a: 1}
+  headerSprite: {fileID: 21300000, guid: 7fbc9563dc5100942a941d793b96be13, type: 3}
+  minHeaderSize: {x: 50, y: 50}
+  headerPadding:
+    left: 0
+    top: 0
+    right: 0
+    bot: 0
+  horizontalSplitterSprite: {fileID: 21300000, guid: ec354cc1307511d4591210460042e6e3,
+    type: 3}
+  verticalSplitterSprite: {fileID: 21300000, guid: ec354cc1307511d4591210460042e6e3,
+    type: 3}
+  minSplitterSize: {x: 10, y: 10}
+  verticalScroll:
+    transition: 2
+    normalSprite: {fileID: 21300000, guid: 529452adea57b1341a558cbc0a14e246, type: 3}
+    spriteState:
+      m_HighlightedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_PressedSprite: {fileID: 21300000, guid: 8f2fcabd5f0b4304790052d63cbb03f5,
+        type: 3}
+      m_SelectedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_DisabledSprite: {fileID: 21300000, guid: 82b13bf8f12468348b55cfa0adb82794,
+        type: 3}
+    normalColor: {r: 1, g: 1, b: 1, a: 1}
+    colorStates:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    scrollbarDim: 50
+    backplateSprite: {fileID: 21300000, guid: bf0f4de5e9aa9734cb4279960844d51f, type: 3}
+  horizScroll:
+    transition: 2
+    normalSprite: {fileID: 21300000, guid: 529452adea57b1341a558cbc0a14e246, type: 3}
+    spriteState:
+      m_HighlightedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_PressedSprite: {fileID: 21300000, guid: 8f2fcabd5f0b4304790052d63cbb03f5,
+        type: 3}
+      m_SelectedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_DisabledSprite: {fileID: 21300000, guid: 82b13bf8f12468348b55cfa0adb82794,
+        type: 3}
+    normalColor: {r: 1, g: 1, b: 1, a: 1}
+    colorStates:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    scrollbarDim: 40
+    backplateSprite: {fileID: 21300000, guid: bf0f4de5e9aa9734cb4279960844d51f, type: 3}
+  scrollRectShowBack: 0
+  scrollRectSensitivity: 50
+  textTextAttrib:
+    font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    fontSize: 20
+    color: {r: 0, g: 0, b: 0, a: 1}
+  inputSprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  inputPadding:
+    left: 10
+    top: 10
+    right: 10
+    bot: 10
+  inputFont:
+    font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    fontSize: 20
+    color: {r: 0, g: 0, b: 0, a: 1}
+  minSliderSize: {x: 50, y: 50}
+  horizSlider:
+    transition: 2
+    normalSprite: {fileID: 21300000, guid: 529452adea57b1341a558cbc0a14e246, type: 3}
+    spriteState:
+      m_HighlightedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_PressedSprite: {fileID: 21300000, guid: 8f2fcabd5f0b4304790052d63cbb03f5,
+        type: 3}
+      m_SelectedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_DisabledSprite: {fileID: 21300000, guid: 82b13bf8f12468348b55cfa0adb82794,
+        type: 3}
+    normalColor: {r: 1, g: 1, b: 1, a: 1}
+    colorStates:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    scrollbarDim: 50
+    backplateSprite: {fileID: 21300000, guid: bf0f4de5e9aa9734cb4279960844d51f, type: 3}
+  vertSlider:
+    transition: 1
+    normalSprite: {fileID: 21300000, guid: 529452adea57b1341a558cbc0a14e246, type: 3}
+    spriteState:
+      m_HighlightedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_PressedSprite: {fileID: 21300000, guid: 8f2fcabd5f0b4304790052d63cbb03f5,
+        type: 3}
+      m_SelectedSprite: {fileID: 21300000, guid: 9ac72651dbd3fd94fa08cf5e99ce7d46,
+        type: 3}
+      m_DisabledSprite: {fileID: 21300000, guid: 82b13bf8f12468348b55cfa0adb82794,
+        type: 3}
+    normalColor: {r: 1, g: 1, b: 1, a: 0}
+    colorStates:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    scrollbarDim: 50
+    backplateSprite: {fileID: 21300000, guid: bf0f4de5e9aa9734cb4279960844d51f, type: 3}
+  checkboxToggleSprite: {fileID: 21300000, guid: 36e2abc77ab7dc143b73bc18583bdcf8,
+    type: 3}
+  checkboxType: 1
+  expandCheckboxGraphic: 0
+  checkboxPadding:
+    left: 4
+    top: 2
+    right: 4
+    bot: 8
+  checkboxStyle:
+    transition: 2
+    normalSprite: {fileID: 21300000, guid: 247499bb7a10a574c8d2dda4de8bd11b, type: 3}
+    spriteState:
+      m_HighlightedSprite: {fileID: 21300000, guid: ddc7379529ada3648b4918a343b629c9,
+        type: 3}
+      m_PressedSprite: {fileID: 21300000, guid: b7d3904441272b14aa49bdd37b9aa03e,
+        type: 3}
+      m_SelectedSprite: {fileID: 21300000, guid: ddc7379529ada3648b4918a343b629c9,
+        type: 3}
+      m_DisabledSprite: {fileID: 0}
+    normalColor: {r: 1, g: 1, b: 1, a: 1}
+    colorStates:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+  checkboxWidth: 50
+  checkboxMinHeight: 50
+  checkboxContentSeperationWidth: 10

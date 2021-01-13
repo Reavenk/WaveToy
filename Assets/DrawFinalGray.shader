@@ -1,4 +1,4 @@
-﻿Shader "Demo/DrawFinal"
+﻿Shader "Demo/DrawFinalRedGreen"
 {
     Properties
     {
@@ -103,11 +103,7 @@
                     half4 obj = tex2D(_Obs, IN.texcoord);
 
                     half4 r = float4(0.0, 0.0, 0.0, 1.0);
-                    float x = color.x;
-                    if (x > 0.0)
-                        r.x = x;
-                    else
-                        r.y = -x;
+                    r.xyz = (color.r + 1.0f) * 0.5f;
 
                     return lerp(r, obj, obj.w);
                 }
