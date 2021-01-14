@@ -17,6 +17,27 @@ public class WaveScene
 
     WaveSimulation waveSim;
 
+    List<SceneActor> actors = new List<SceneActor>();
+
+    public bool HasActor(SceneActor actor)
+    { 
+        return this.actors.Contains(actor);
+    }
+
+    public bool RemoveActor(SceneActor actor)
+    { 
+        return this.actors.Remove(actor);
+    }
+
+    public bool AddActor(SceneActor actor)
+    {
+        if(this.actors.Contains(actor) == true)
+            return false;
+
+        this.actors.Add(actor);
+        return true;
+    }
+
     public void Initialize(WaveSimulation ws)
     { 
         this.waveSim = ws;

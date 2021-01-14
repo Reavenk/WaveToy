@@ -360,7 +360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 132.50151, y: -132.50154}
+  m_AnchoredPosition: {x: 8.500057, y: -8.500028}
   m_SizeDelta: {x: 1000, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &92017685
@@ -744,8 +744,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 607183061}
   m_HandleRect: {fileID: 607183060}
   m_Direction: 2
-  m_Value: 8.294233
-  m_Size: 0.75343597
+  m_Value: 1
+  m_Size: 0.983
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -998,8 +998,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1747395036}
   m_HandleRect: {fileID: 1747395035}
   m_Direction: 0
-  m_Value: -7.2942038
-  m_Size: 0.753436
+  m_Value: 0
+  m_Size: 0.983
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1377,6 +1377,7 @@ GameObject:
   - component: {fileID: 467089508}
   - component: {fileID: 467089507}
   - component: {fileID: 467089506}
+  - component: {fileID: 467089510}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1468,6 +1469,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &467089510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467089505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ff5d0d43187904c9381252bb17d820, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &501923296
 GameObject:
   m_ObjectHideFlags: 0
@@ -4504,6 +4517,14 @@ MonoBehaviour:
   treeScroll: {fileID: 1645608717}
   optionScroll: {fileID: 1716946929}
   treesSyncRecursionGuard: 0
+  prefabWCheckbox: {fileID: 130527045267833088, guid: 46aa038c777f271469d5b7fee69bb020,
+    type: 3}
+  prefabWPulldown: {fileID: 5169189375996262067, guid: efcb8b61a8ec77f40ae5af2c74555fd2,
+    type: 3}
+  prefabWSpinner: {fileID: 110167634587383889, guid: ab2fb148fee207346b558fc5135c2b4c,
+    type: 3}
+  prefabWRotation: {fileID: 4511377039901484484, guid: dd34d47df176fa44fba58bb1804b23d5,
+    type: 3}
 --- !u!1 &1481450497
 GameObject:
   m_ObjectHideFlags: 0
@@ -5050,9 +5071,9 @@ MonoBehaviour:
   m_Content: {fileID: 1269162900}
   m_Horizontal: 1
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 271902919}
@@ -5158,9 +5179,9 @@ MonoBehaviour:
   m_Content: {fileID: 1392587194}
   m_Horizontal: 1
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 1349802761}

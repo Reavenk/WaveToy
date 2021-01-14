@@ -60,6 +60,8 @@ public class Main :
 
     public PxPre.UIL.Factory uiFactory;
 
+    HashSet<SceneActor> dirtyActors = new HashSet<SceneActor>();
+
     public bool playing = true;
 
     private void Awake()
@@ -105,12 +107,20 @@ public class Main :
         this.zoomSlider.value = 1.0f;
 
         this.DisableAddNotices();
+
+        foreach(Pane_Base pb in this.Panes())
+            pb.Init(this);
     }
 
     void Update()
     {
         if(this.playing == true)
             this.Integrate();
+
+        foreach(SceneActor sa in this.dirtyActors)
+            sa.UpdateGeometry();
+
+        this.dirtyActors.Clear();
     }
 
     public void Integrate()
@@ -299,16 +309,76 @@ public class Main :
         Vector2 rectRelPt = 
             this.simScrollRect.transform.worldToLocalMatrix.MultiplyPoint(eventData.position);
 
-        if(this.simScrollRect.viewport.rect.Contains(rectRelPt) == true)
-            Debug.Log("Yo!");
+        if(this.simScrollRect.viewport.rect.Contains(rectRelPt) == false)
+            return;
+
+        // TODO: Find point
+        Vector2 insertionPt = rectRelPt;
+
+        PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
+        stk.PushMenu("Create Barrier");
+        stk.AddAction("Box", ()=>{ this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Square, SceneActor.Fill.Filled); });
+        stk.AddAction("Cup", () => { this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Hollow); });
+        stk.AddAction("Ellipse", () => { this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
+        stk.AddAction("Circle", () => { this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
+        stk.PopMenu();
+        //
+        stk.PushMenu("Create Emitter");
+        stk.AddAction("Yo1", null);
+        stk.PopMenu();
+        //
+        stk.PushMenu("Create Sensor");
+        stk.AddAction("Yo1", null);
+        stk.PopMenu();
+        
+
+        PxPre.DropMenu.DropMenuSingleton.MenuInst.CreateDropdownMenu(
+            this.canvas, 
+            stk.Root, 
+            eventData.position);
+            
     }
 
     public void DefferedAddDrag_OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
     {
     }
 
-    private void OnGUI()
+    public IEnumerable<Pane_Base> Panes()
+    { 
+        yield return this.paneInfo;
+        yield return this.paneProperties;
+    }
+
+    public void AddActor(SceneActor actor)
+    { 
+        if(this.waveScene.AddActor(actor) == true)
+            this.NotifyActorAdded(actor);
+    }
+
+    public void RemoveActor(SceneActor actor)
     {
+    }
+
+    protected void NotifyActorAdded(SceneActor actor)
+    {
+        foreach (Pane_Base pb in this.Panes())
+            pb.OnActorAdded(actor);
+    }
+
+    protected void NotifyActorRemoved(SceneActor actor)
+    {
+        foreach (Pane_Base pb in this.Panes())
+            pb.OnActorDeleted(actor);
+
+        this.dirtyActors.Remove(actor);
+    }
+
+    public void NotifyActorModified(SceneActor actor, string name)
+    { 
+        foreach(Pane_Base pb in this.Panes())
+            pb.OnActorModified(actor, name);
+
+        this.dirtyActors.Add(actor);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -338,4 +408,14 @@ public class Main :
 
     void PxPre.UIDock.IDockListener.OnClosing(PxPre.UIDock.Root r, PxPre.UIDock.Window win)
     {}
+
+    public void CreateShape(Vector2 pos, SceneActor.Type type, SceneActor.Shape shape, SceneActor.Fill fill)
+    { 
+        SceneActor act = new SceneActor();
+        act.posx.val.SetFloat(pos.x);
+        act.posy.val.SetFloat(pos.y);
+        act.rot.val.SetFloat(0.0f);
+
+        this.AddActor(act);
+    }
 }
