@@ -33,4 +33,7 @@ public class Pane_Base : MonoBehaviour
 
     public virtual void OnActorModified(SceneActor actor, string paramName)
     {}
+
+    public virtual void OnActorSelected(SceneActor actor)
+    { }
 }

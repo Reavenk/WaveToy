@@ -10,6 +10,13 @@ public class Main :
     //public Texture2D tex;
     //public Texture2D tex2;
 
+    public enum ManipMode
+    { 
+        Translate,
+        Rotate,
+        Drag
+    }
+
     int dim = 1024;
 
     public float divAmt = 50.0f;
@@ -52,17 +59,21 @@ public class Main :
     public WaveScene waveScene;
     public WaveSimulation waveSim;
 
-    public Material drawMat;
-
     public UnityEngine.UI.Image dragReticule;
     public UnityEngine.UI.Text dragNotice;
     
-
     public PxPre.UIL.Factory uiFactory;
+
+    ManipMode manipMode = ManipMode.Translate;
+    public UnityEngine.UI.Image manipTransIcon;
+    public UnityEngine.UI.Image manipRotIcon;
+    public UnityEngine.UI.Image manipDragIcon;
 
     HashSet<SceneActor> dirtyActors = new HashSet<SceneActor>();
 
     public bool playing = true;
+
+    SceneActor selection;
 
     private void Awake()
     {
@@ -71,6 +82,8 @@ public class Main :
 
         this.waveScene.Initialize(this.waveSim);
         this.dockSys.listener = this;
+
+        Application.targetFrameRate = 30;
     }
 
     void Start()
@@ -108,17 +121,25 @@ public class Main :
 
         this.DisableAddNotices();
 
-        foreach(Pane_Base pb in this.Panes())
+        this.RefershManipIcons();
+
+        foreach (Pane_Base pb in this.Panes())
             pb.Init(this);
     }
 
     void Update()
     {
         if(this.playing == true)
+        {
             this.Integrate();
 
-        foreach(SceneActor sa in this.dirtyActors)
-            sa.UpdateGeometry();
+            foreach(SceneActor sa in this.dirtyActors)
+                sa.UpdateGeometry(this.waveScene);
+        }
+        else
+        {
+            this.waveScene.UpdateBuffersWithoutIntegration();
+        }
 
         this.dirtyActors.Clear();
     }
@@ -126,11 +147,7 @@ public class Main :
     public void Integrate()
     {
         this.waveScene.Integrate();
-
         this.img.texture = this.waveSim.SignalRecent;
-
-        float f = Mathf.Sin(Time.time * Mathf.PI * 2 * this.modulateRate) * 0.5f;
-        drawMat.SetColor("_Color", new Color(f, f, f, 1.0f));
     }
 
     void DisableAddNotices()
@@ -155,7 +172,7 @@ public class Main :
 
     public void OnSlider_Zoom()
     { 
-        this.SetZoom(Mathf.Lerp(-1.0f, 1.0f, this.zoomSlider.value));
+        this.SetZoom(Mathf.Lerp(-1.0f, 1.0f, this.zoomSlider.value), false);
     }
 
     public void OnButton_ZoomIn()
@@ -168,7 +185,7 @@ public class Main :
         this.zoomSlider.value -= 0.2f;
     }
 
-    public void SetZoom(float newZoom)
+    public void SetZoom(float newZoom, bool setScrollbar)
     { 
         this.zoom = Mathf.Clamp(newZoom, -1.0f, 1.0f);
 
@@ -181,6 +198,11 @@ public class Main :
 
         this.img.rectTransform.localScale =
             new Vector3(realZoom, realZoom, realZoom);
+
+        if(setScrollbar == true)
+        { 
+            this.zoomSlider.value = newZoom * 0.5f + 0.5f;
+        }
     }
 
     public void OnButton_PlayPause()
@@ -301,26 +323,55 @@ public class Main :
         this.EnableAddDrag();
     }
 
+    public Ray ? GetRayAtUIMouse(Vector2 mouse)
+    {
+        Vector2 rectRelPt =
+            this.simScrollRect.transform.worldToLocalMatrix.MultiplyPoint(mouse);
+
+        if (this.simScrollRect.viewport.rect.Contains(rectRelPt) == false)
+            return null;
+
+
+        Vector3 local = this.img.transform.worldToLocalMatrix.MultiplyPoint(mouse);
+        Rect r = this.img.rectTransform.rect;
+        Vector3 vp =
+            new Vector3(
+                Mathf.InverseLerp(r.xMin, r.xMax, local.x),
+                Mathf.InverseLerp(r.yMin, r.yMax, local.y),
+                0.0f);
+
+        Ray ray = this.waveScene.simObstacleCam.ViewportPointToRay(vp);
+        return ray;
+    }
+
     public void DefferedAddDrag_OnEndDrag(UnityEngine.EventSystems.PointerEventData eventData)
     {
         this.DisableAddNotices();
 
-
-        Vector2 rectRelPt = 
-            this.simScrollRect.transform.worldToLocalMatrix.MultiplyPoint(eventData.position);
-
-        if(this.simScrollRect.viewport.rect.Contains(rectRelPt) == false)
+        Ray ? r = GetRayAtUIMouse(eventData.position);
+        if(r.HasValue == false)
             return;
 
-        // TODO: Find point
-        Vector2 insertionPt = rectRelPt;
+        Vector2 insertionPt = r.Value.origin;
 
         PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
+        this.CreateAddMenu(insertionPt, stk);
+        
+
+        PxPre.DropMenu.DropMenuSingleton.MenuInst.CreateDropdownMenu(
+            this.canvas, 
+            stk.Root, 
+            eventData.position);
+            
+    }
+
+    void CreateAddMenu(Vector2 createPos, PxPre.DropMenu.StackUtil stk)
+    {
         stk.PushMenu("Create Barrier");
-        stk.AddAction("Box", ()=>{ this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Square, SceneActor.Fill.Filled); });
-        stk.AddAction("Cup", () => { this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Hollow); });
-        stk.AddAction("Ellipse", () => { this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
-        stk.AddAction("Circle", () => { this.CreateShape(insertionPt, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
+        stk.AddAction("Box", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Square, SceneActor.Fill.Filled); });
+        stk.AddAction("Cup", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Hollow); });
+        stk.AddAction("Ellipse", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
+        stk.AddAction("Circle", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
         stk.PopMenu();
         //
         stk.PushMenu("Create Emitter");
@@ -330,13 +381,6 @@ public class Main :
         stk.PushMenu("Create Sensor");
         stk.AddAction("Yo1", null);
         stk.PopMenu();
-        
-
-        PxPre.DropMenu.DropMenuSingleton.MenuInst.CreateDropdownMenu(
-            this.canvas, 
-            stk.Root, 
-            eventData.position);
-            
     }
 
     public void DefferedAddDrag_OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
@@ -353,10 +397,13 @@ public class Main :
     { 
         if(this.waveScene.AddActor(actor) == true)
             this.NotifyActorAdded(actor);
+
+        actor.UpdateGeometry(this.waveScene);
     }
 
     public void RemoveActor(SceneActor actor)
     {
+        actor.Destroy();
     }
 
     protected void NotifyActorAdded(SceneActor actor)
@@ -367,10 +414,18 @@ public class Main :
 
     protected void NotifyActorRemoved(SceneActor actor)
     {
+        if(this.selection == actor)
+            this.selection = null;
+
         foreach (Pane_Base pb in this.Panes())
             pb.OnActorDeleted(actor);
 
         this.dirtyActors.Remove(actor);
+    }
+
+    public void NotifyActorModified(SceneActor actor, EditValue ev)
+    { 
+        this.NotifyActorModified(actor, ev.name);
     }
 
     public void NotifyActorModified(SceneActor actor, string name)
@@ -381,12 +436,27 @@ public class Main :
         this.dirtyActors.Add(actor);
     }
 
+    protected void NotifyActorSelected(SceneActor actor)
+    {
+        foreach (Pane_Base pb in this.Panes())
+            pb.OnActorSelected(actor);
+    }
+
+    public void SelectActor(SceneActor actor)
+    { 
+        if(this.selection == actor)
+            return;
+
+        this.selection = actor;
+        NotifyActorSelected(this.selection);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     //
     //      INTERFACE : IDockListener
     //
     ////////////////////////////////////////////////////////////////////////////////
-    
+
     bool PxPre.UIDock.IDockListener.RequestUndock(PxPre.UIDock.Root r, PxPre.UIDock.Window win)
     {  return true; }
 
@@ -412,10 +482,310 @@ public class Main :
     public void CreateShape(Vector2 pos, SceneActor.Type type, SceneActor.Shape shape, SceneActor.Fill fill)
     { 
         SceneActor act = new SceneActor();
+
         act.posx.val.SetFloat(pos.x);
         act.posy.val.SetFloat(pos.y);
+
         act.rot.val.SetFloat(0.0f);
 
+        act.shape.val.SetInt((int)shape);
+        act.actorType.val.SetInt((int)type);
+        act.fillMode.val.SetInt((int)fill);
+
         this.AddActor(act);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //
+    //      HANDLER : SimEventDirect
+    //
+    ////////////////////////////////////////////////////////////////////////////////
+    
+    Vector2 originalSimDragClick = Vector2.zero;
+    SceneActor draggedActor = null;
+
+    public void OnSimEvent_OnBeginDrag(UnityEngine.EventSystems.PointerEventData ped)
+    { 
+    }
+
+    public void OnSimEvent_OnEndDrag(UnityEngine.EventSystems.PointerEventData ped)
+    {
+        this.draggedActor = null;
+    }
+
+    public void OnSimEvent_OnDrag(UnityEngine.EventSystems.PointerEventData ped)
+    {
+        if(this.draggedActor != null)
+        {
+            Ray? r = GetRayAtUIMouse(ped.position);
+            if(r.HasValue)
+            {
+                Vector3 onObj = this.draggedActor.gameObject.transform.localToWorldMatrix.MultiplyPoint(this.originalSimDragClick);
+
+                if (this.manipMode == ManipMode.Translate)
+                {
+                    Vector3 pos = this.draggedActor.gameObject.transform.position + (r.Value.origin - onObj);
+                    pos.z = 0.0f;
+                    this.draggedActor.gameObject.transform.position = pos;
+
+                    this.draggedActor.posx.FloatVal = pos.x;
+                    this.draggedActor.posy.FloatVal = pos.y;
+                    this.NotifyActorModified(draggedActor, "X");
+                    this.NotifyActorModified(draggedActor, "Y");
+                }
+                else if(this.manipMode == ManipMode.Rotate)
+                { 
+                    Vector2 curDragVec = this.draggedActor.gameObject.transform.localToWorldMatrix.MultiplyVector(this.originalSimDragClick);
+                    Vector2 targDragVec = r.Value.origin - this.draggedActor.gameObject.transform.position;
+                    float rotAmt = Vector2.SignedAngle(curDragVec, targDragVec);
+                    this.draggedActor.gameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotAmt) * this.draggedActor.gameObject.transform.rotation;
+
+                    float zr = this.draggedActor.gameObject.transform.rotation.eulerAngles.z;
+                    this.draggedActor.rot.FloatVal = ((zr + 180.0f) % 360.0f + 360.0f) % 360.0f - 180.0f;
+                    this.NotifyActorModified(draggedActor, "Rotation");
+                }
+                else if(this.manipMode == ManipMode.Drag)
+                {
+                    float mag = this.originalSimDragClick.magnitude;
+                    Vector2 curDragVec = this.draggedActor.gameObject.transform.localToWorldMatrix.MultiplyVector(this.originalSimDragClick);
+                    Vector2 targVec = r.Value.origin - this.draggedActor.gameObject.transform.position;
+                    float rotAmt = Vector2.SignedAngle(curDragVec, targVec);
+                    this.draggedActor.gameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotAmt) * this.draggedActor.gameObject.transform.rotation;
+
+                    Vector2 targPos = (Vector2)r.Value.origin - targVec.normalized * mag;
+                    this.draggedActor.gameObject.transform.position = targPos;
+
+                    float zr = this.draggedActor.gameObject.transform.rotation.eulerAngles.z;
+                    this.draggedActor.rot.FloatVal = ((zr + 180.0f) % 360.0f + 360.0f) % 360.0f - 180.0f;
+                    this.NotifyActorModified(draggedActor, "Rotation");
+
+                    this.draggedActor.posx.FloatVal = targPos.x;
+                    this.draggedActor.posy.FloatVal = targPos.y;
+                    this.NotifyActorModified(draggedActor, "X");
+                    this.NotifyActorModified(draggedActor, "Y");
+                }
+            }
+
+        }
+        else
+        {
+            Vector2 cp =
+                this.img.rectTransform.worldToLocalMatrix.MultiplyPoint(ped.position);
+
+            Vector2 diff = this.originalSimDragClick - cp;
+
+            Rect rimg = this.img.rectTransform.rect;
+
+            diff.x /= rimg.width;
+            diff.y /= rimg.height;
+
+            Vector2 newNormPos = this.simScrollRect.normalizedPosition + diff;
+            newNormPos.x = Mathf.Clamp01(newNormPos.x);
+            newNormPos.y = Mathf.Clamp01(newNormPos.y);
+
+            this.simScrollRect.normalizedPosition = newNormPos;
+        }
+    }
+
+    public void OnSimEvent_OnPointerDown(UnityEngine.EventSystems.PointerEventData ped)
+    {
+        Ray ? r = GetRayAtUIMouse(ped.position);
+        SceneActorTag sat = null;
+        if(r.HasValue == true)
+        { 
+            RaycastHit [] rhs = Physics.RaycastAll(r.Value);
+            foreach(RaycastHit rh in rhs)
+            { 
+                sat = rh.collider.gameObject.GetComponent<SceneActorTag>();
+                break;
+            }
+        }
+
+        if(ped.button == UnityEngine.EventSystems.PointerEventData.InputButton.Right)
+        {
+            if (r.HasValue == true)
+            {
+
+                PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
+
+                stk.AddAction("Clear Signal", ()=>{ this.OnMenu_ClearSignal(); });
+                stk.AddSeparator();
+
+                if(sat != null)
+                { 
+                    stk.PushMenu("Set Shape");
+                        stk.AddAction(
+                            "Ellipse", 
+                            ()=>
+                            { 
+                                sat.actor.shape.IntVal = (int)SceneActor.Shape.Ellipse; 
+                                this.NotifyActorModified(sat.actor, sat.actor.shape.name);
+                            });
+                        stk.AddAction(
+                            "Rectangle", 
+                            ()=> 
+                            { 
+                                sat.actor.shape.IntVal = (int)SceneActor.Shape.Square;
+                                this.NotifyActorModified(sat.actor, sat.actor.shape.name);
+                            });
+                    stk.PopMenu();
+
+                    stk.PushMenu("Set Fill");
+                        stk.AddAction(
+                            "Hollow", 
+                            () => 
+                            {
+                                sat.actor.fillMode.IntVal = (int)SceneActor.Fill.Hollow;
+                                this.NotifyActorModified(sat.actor, sat.actor.fillMode.name);
+                            });
+                        stk.AddAction(
+                            "Fill", 
+                            () => 
+                            {
+                                sat.actor.fillMode.IntVal = (int)SceneActor.Fill.Filled;
+                                this.NotifyActorModified(sat.actor, sat.actor.fillMode.name);
+                            });
+                    stk.PopMenu();
+
+                    stk.PushMenu("Set Type");
+                        stk.AddAction(
+                            "Emitter", 
+                            () => 
+                            {
+                                sat.actor.actorType.IntVal = (int)SceneActor.Type.Emitter;
+                                this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
+                            });
+                        stk.AddAction(
+                            "Barrier", 
+                            () => 
+                            {
+                                sat.actor.actorType.IntVal = (int)SceneActor.Type.Barrier;
+                                this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
+                            });
+                        stk.AddAction(
+                            "Impedance", 
+                            () => 
+                            {
+                                sat.actor.actorType.IntVal = (int)SceneActor.Type.Impedance;
+                                this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
+                            });
+                        stk.AddAction(
+                            "Sensor", 
+                            () => 
+                            {
+                                sat.actor.actorType.IntVal = (int)SceneActor.Type.Sensor;
+                                this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
+                            });
+                    stk.PopMenu();
+
+                    stk.AddSeparator();
+
+                    stk.AddAction("Delete", ()=>{this.RemoveActor( sat.actor); });
+
+                }
+                else
+                {
+                    this.CreateAddMenu(r.Value.origin, stk);
+                }
+
+
+                PxPre.DropMenu.DropMenuSingleton.MenuInst.CreateDropdownMenu(
+                    this.canvas,
+                    stk.Root,
+                    ped.position);
+
+                return;
+            }
+        }
+
+        if (sat != null)
+        {
+            draggedActor = sat.actor;
+            this.SelectActor(draggedActor);
+        }
+
+        if (draggedActor != null)
+        {
+            this.originalSimDragClick = 
+                sat.transform.worldToLocalMatrix.MultiplyPoint(r.Value.origin);
+        }
+        else
+        {
+            this.originalSimDragClick = 
+                this.img.rectTransform.worldToLocalMatrix.MultiplyPoint(ped.position);
+        }
+    }
+
+    public void OnSimEvent_OnPointerUp(UnityEngine.EventSystems.PointerEventData ped)
+    {
+    }
+
+    public void OnSimEvent_OnPointerEnter(UnityEngine.EventSystems.PointerEventData ped)
+    {
+    }
+
+    public void OnSimEvent_OnPointerExit(UnityEngine.EventSystems.PointerEventData ped)
+    {
+    }
+
+    public void OnSimEvent_OnScroll(UnityEngine.EventSystems.PointerEventData ped)
+    {
+
+        float uz = this.zoom + ped.scrollDelta.y * 0.05f;
+        this.SetZoom(uz, true);
+
+
+        Debug.Log(ped.scrollDelta);
+    }
+
+    public void SkipSimSteps(int steps)
+    { 
+        for(int i = 0; i < steps; ++i)
+            this.Integrate();
+    }
+
+    public void OnButton_SkipSteps10()
+    { 
+        this.SkipSimSteps(10);
+    }
+
+    public void OnButton_SkipSteps100()
+    { 
+        this.SkipSimSteps(100);
+    }
+
+    public void OnButton_ClearSignal()
+    { 
+        this.OnMenu_ClearSignal();
+    }
+
+    public void OnButton_ModeTranslate()
+    {
+        this.manipMode = ManipMode.Translate;
+        this.RefershManipIcons();
+    }
+
+    public void OnButton_ModeRotation()
+    {
+        this.manipMode = ManipMode.Rotate;
+        this.RefershManipIcons();
+    }
+
+    public void OnButton_ModeTranslateRotate()
+    {
+        this.manipMode = ManipMode.Drag;
+        this.RefershManipIcons();
+    }
+
+    public void RefershManipIcons()
+    {
+        float f = (this.manipMode == ManipMode.Translate) ? 1.0f : 0.2f;
+        this.manipTransIcon.color = new Color(1.0f, 1.0f, 1.0f, f);
+
+        f = (this.manipMode == ManipMode.Rotate) ? 1.0f : 0.2f;
+        this.manipRotIcon.color = new Color(1.0f, 1.0f, 1.0f, f);
+
+        f = (this.manipMode == ManipMode.Drag) ? 1.0f : 0.2f;
+        this.manipDragIcon.color = new Color(1.0f, 1.0f, 1.0f, f);
     }
 }

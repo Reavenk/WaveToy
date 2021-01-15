@@ -30,7 +30,7 @@ public class ValueEditor_Pulldown : ValueEditor_Base
                         { 
                             ve.i = iCpy;
                             this.OnUpdateValue();
-                            this.Mgr.NotifyActorModified(actor, ve.sels[iCpy]);
+                            this.Mgr.NotifyActorModified(actor, this.EV.name);
                         });
                 }
 

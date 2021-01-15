@@ -117,6 +117,7 @@ public class Pane_Properties :
             if(nw.widgets.TryGetValue(ev.name, out pnp) == true)
             { 
                 pnp.node = np;
+                np.MinHeight = pnp.param.rectTransform.sizeDelta.y;
                 nw.widgets[ev.name] = pnp;
             }
             else
@@ -245,6 +246,13 @@ public class Pane_Properties :
         }
     }
 
+    public override void OnActorSelected(SceneActor actor)
+    { 
+        if(this.actorToNode.TryGetValue(actor, out PxPre.Tree.Node v) == true)
+        { 
+            this.tree.SelectNode(v, true);
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////
     //

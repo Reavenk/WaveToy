@@ -11,8 +11,30 @@ public struct EditValue
     public ValueBase min;
     public ValueBase max;
 
-    public ValueBase decr;
     public ValueBase incr;
+
+    public bool BoolVal
+    { 
+        get => this.val.GetBool();
+        set{ this.val.SetBool(value); }
+    }
+
+    public int IntVal
+    { 
+        get => this.val.GetInt();
+        set{ this.val.SetInt(value); }
+    }
+
+    public float FloatVal
+    { 
+        get => this.val.GetFloat();
+        set{ this.val.SetFloat(value); }
+    }
+
+    public string StringVal
+    { 
+        get => this.val.GetString();
+    }
 
     public EditValue(string name, ValueBase val)
     {
@@ -22,7 +44,6 @@ public struct EditValue
 
         this.min = null;
         this.max = null;
-        this.decr = null;
         this.incr = null;
     }
 
@@ -34,18 +55,16 @@ public struct EditValue
         this.min = min;
         this.max = max;
 
-        this.decr = null;
         this.incr = null;
     }
 
-    public EditValue(string name, ValueBase val, ValueBase min, ValueBase max, ValueBase decr, ValueBase incr)
+    public EditValue(string name, ValueBase val, ValueBase min, ValueBase max, ValueBase incr)
     {
         this.name = name;
 
         this.val = val;
         this.min = min;
         this.max = max;
-        this.decr = decr;
         this.incr = incr;
     }
 
@@ -58,6 +77,18 @@ public struct EditValue
             vb = this.max.Min(vb);
 
         return vb;
+    }
+
+    public ValueBase Offset(ValueBase orig, ValueBase diff)
+    {
+
+        if(this.incr != null)
+            diff = diff.Mul(this.incr);
+
+        ValueBase ret = orig.Add(diff);
+
+        ret = this.Clamp(ret);
+        return ret;
     }
 
 }

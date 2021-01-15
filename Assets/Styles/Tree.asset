@@ -16,12 +16,12 @@ MonoBehaviour:
   unselected: {r: 1, g: 1, b: 1, a: 1}
   selected: {r: 0.8820755, g: 1, b: 0.8988408, a: 1}
   expandSprite: {fileID: 21300000, guid: df816a210b939974d96fe76e65edb275, type: 3}
-  vNodeSpace: 5
+  vNodeSpace: 2
   compressSprite: {fileID: 21300000, guid: 36a29deb10fa47840a261387f1967660, type: 3}
   parentPlateSpacer: 5
   minSize: {x: 20, y: 20}
   horizPlateMargin: 10
-  vertPlateMargin: 10
+  vertPlateMargin: 5
   indentAmt: 20
   startOffset: {x: 10, y: 10}
   endOffset: {x: 10, y: 10}

@@ -59,7 +59,7 @@
                 float4 obj = tex2D(_Obs, i.uv);
                 if (obj.a != 0.0)
                 {
-                    float4 pxT = tex2D(_T2, i.uv);
+                    float4 pxT = 0;// tex2D(_T2, i.uv);
                     return pxT;
                 }
 

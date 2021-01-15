@@ -44,7 +44,11 @@ public class ValueEditor_Spinner : ValueEditor_Base
                 vb = new ValueInt(i);
         }
 
-        this.EV.val.SetValue(this.EV.Clamp(vb));
+        if(vb != null)
+        {
+            this.EV.val.SetValue(this.EV.Clamp(vb));
+            this.Mgr.NotifyActorModified(this.actor, this.EV.name);
+        }
         this.OnUpdateValue();
     }
 
@@ -74,8 +78,7 @@ public class ValueEditor_Spinner : ValueEditor_Base
                 UnityEngine.EventSystems.PointerEventData ped = x as UnityEngine.EventSystems.PointerEventData;
 
                 ValueFloat diff = new ValueFloat(-(startDrag.y - ped.position.y));
-                ValueBase vb = startingDragValue.Add(diff);
-                vb = ev.Clamp(vb);
+                 ValueBase vb = ev.Offset(startingDragValue, diff);
                 ev.val.SetValue(vb);
 
                 mgr.NotifyActorModified(actor, ev.name);
@@ -89,8 +92,7 @@ public class ValueEditor_Spinner : ValueEditor_Base
                 UnityEngine.EventSystems.PointerEventData ped = x as UnityEngine.EventSystems.PointerEventData;
 
                 ValueFloat diff = new ValueFloat(-(startDrag.y - ped.position.y));
-                ValueBase vb = startingDragValue.Add(diff);
-                vb = ev.Clamp(vb);
+                ValueBase vb = ev.Offset(startingDragValue, diff);
                 ev.val.SetValue(vb);
 
                 mgr.NotifyActorModified(actor, ev.name);
