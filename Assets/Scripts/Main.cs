@@ -18,6 +18,15 @@ public class Main :
         Scale
     }
 
+    [System.Serializable]
+    public struct DemoFile
+    { 
+        public string name;
+
+        public TextAsset asset;
+        public string resourceName;
+    }
+
     int dim = 1024;
 
     public float divAmt = 50.0f;
@@ -78,6 +87,10 @@ public class Main :
     SceneActor selection;
     public SceneActor Selected {get=>this.selection; }
 
+    public List<DemoFile> demoScenarios = new List<DemoFile>();
+
+    internal string documentComment = "";
+
     private void Awake()
     {
         this.waveSim = new WaveSimulation();
@@ -128,6 +141,10 @@ public class Main :
 
         foreach (Pane_Base pb in this.Panes())
             pb.Init(this);
+
+        this.dockSys.ForceLayout();
+        this.dockSys.ResizeAddressWithProportions(null, new float [] {1.0f, 2.0f });
+        this.dockSys.ResizeAddressWithProportions(new int[]{0}, new float[] { 3.0f, 1.0f });
     }
 
     void Update()
@@ -145,6 +162,53 @@ public class Main :
         }
 
         this.dirtyActors.Clear();
+
+#if UNITY_EDITOR
+        if(Input.GetKeyDown( KeyCode.S) == true)
+        { 
+            System.Xml.XmlDocument savedDoc = this.waveScene.Save("Comment");
+
+            System.IO.StringWriter string_writer = new System.IO.StringWriter();
+            System.Xml.XmlTextWriter xml_text_writer = new System.Xml.XmlTextWriter(string_writer);
+            xml_text_writer.Formatting = System.Xml.Formatting.Indented;
+            savedDoc.WriteTo(xml_text_writer);
+            System.IO.File.WriteAllText("Saved.xml", string_writer.ToString());
+        }
+
+        if (Input.GetKeyDown(KeyCode.L) == true)
+        {
+            string str = System.IO.File.ReadAllText("Saved.xml");
+            System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+            doc.LoadXml(str);
+
+            this.LoadXML(doc);
+        }
+#endif
+
+    }
+
+    public void LoadDemoFile(DemoFile df)
+    {
+        // TODO:
+    }
+
+    public void LoadXML(System.Xml.XmlDocument doc)
+    {
+        this.Clear();
+
+        this.waveScene.Load(doc, false, out this.documentComment);
+
+        this.NotifyLoad();
+    }
+
+    void Clear()
+    { 
+        this.documentComment = string.Empty;
+        this.selection = null;
+
+        this.waveScene.Clear();
+        this.waveSim.ClearBuffers();
+        this.NotifyClear();
     }
 
     public void Integrate()
@@ -228,9 +292,12 @@ public class Main :
         stk.AddAction("Clear Signal", ()=>{ this.OnMenu_ClearSignal(); });
         stk.AddAction("Clear Scene", ()=>{ });
         stk.PushMenu("Scenarios");
-            stk.AddAction("--", ()=>{ });
-            stk.AddAction("--", () => { });
-            stk.AddAction("--", () => { });
+
+        foreach(DemoFile df in this.demoScenarios)
+        { 
+            DemoFile dfCpy = df;
+            stk.AddAction(dfCpy.name, ()=>{ this.LoadDemoFile(dfCpy); });
+        }
         stk.PopMenu();
 
         PxPre.DropMenu.DropMenuSingleton.MenuInst.CreateDropdownMenu(
@@ -403,6 +470,18 @@ public class Main :
 
         this.NotifyActorRemoved(actor);
 
+    }
+
+    protected void NotifyClear()
+    {
+        foreach (Pane_Base pb in this.Panes())
+            pb.OnCleared();
+    }
+
+    protected void NotifyLoad()
+    {
+        foreach (Pane_Base pb in this.Panes())
+            pb.OnLoaded();
     }
 
     protected void NotifyActorAdded(SceneActor actor)

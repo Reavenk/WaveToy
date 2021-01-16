@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using PxPre.Datum;
+
 public class Pane_Properties : 
     Pane_Base,
     PxPre.Tree.ITreeHandler
@@ -208,19 +210,19 @@ public class Pane_Properties :
                 {
                     goPrefab = GameObject.Instantiate(this.prefabWRotation);
                 }
-                else if(ev.val.ty == ValueBase.Type.Float)
+                else if(ev.val.ty == Val.Type.Float)
                 {
                     goPrefab = GameObject.Instantiate(this.prefabWSpinner);
                 }
-                else if(ev.val.ty == ValueBase.Type.Int)
+                else if(ev.val.ty == Val.Type.Int)
                 {
                     goPrefab = GameObject.Instantiate(this.prefabWSpinner);
                 }
-                else if(ev.val.ty == ValueBase.Type.Bool)
+                else if(ev.val.ty == Val.Type.Bool)
                 {
                     goPrefab = GameObject.Instantiate(this.prefabWCheckbox);
                 }
-                else if(ev.val.ty == ValueBase.Type.Enum)
+                else if(ev.val.ty == Val.Type.Enum)
                 {
                     goPrefab = GameObject.Instantiate(this.prefabWPulldown);
                 }
@@ -317,8 +319,8 @@ public class Pane_Properties :
         if(ev.HasValue)
         { 
             if(
-                ev.Value.val.ty == ValueBase.Type.Enum ||
-                ev.Value.val.ty == ValueBase.Type.Bool)
+                ev.Value.val.ty == Val.Type.Enum ||
+                ev.Value.val.ty == Val.Type.Bool)
             {
                 RefreshActorParams(actor);
 
@@ -339,6 +341,16 @@ public class Pane_Properties :
                 this.tree.SelectNode(v, true);
             }
         }
+    }
+
+    public override void OnLoaded()
+    {
+        this.RebuildActorTree();
+    }
+
+    public override void OnCleared()
+    {
+        this.RebuildActorTree();
     }
 
     public void OnToggle_ViewAll()

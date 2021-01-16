@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using PxPre.Datum;
+
 public class ValueEditor_Pulldown : ValueEditor_Base
 {
     public UnityEngine.UI.Button button;
@@ -13,7 +15,7 @@ public class ValueEditor_Pulldown : ValueEditor_Base
 
         this.OnUpdateValue();
 
-        ValueEnum ve = ev.val as ValueEnum;
+        ValEnum ve = ev.val as ValEnum;
 
         this.button.onClick.AddListener(
             ()=>
@@ -21,16 +23,20 @@ public class ValueEditor_Pulldown : ValueEditor_Base
                 PxPre.DropMenu.StackUtil stk = 
                     new PxPre.DropMenu.StackUtil("");
 
-                for(int i = 0; i < ve.sels.Length; ++i)
+                foreach(string sel in ve.selections.GetNames())
                 { 
-                    int iCpy = i;
+                    string selCpy = sel;
                     stk.AddAction( 
-                        ve.sels[iCpy],  
+                        selCpy,  
                         ()=>
-                        { 
-                            ve.i = iCpy;
-                            this.OnUpdateValue();
-                            this.Mgr.NotifyActorModified(actor, this.EV.name);
+                        {
+                            int ? n = ve.selections.GetInt(selCpy);
+                            if(n.HasValue == true)
+                            {
+                                ve.i = n.Value;
+                                this.OnUpdateValue();
+                                this.Mgr.NotifyActorModified(actor, this.EV.name);
+                            }
                         });
                 }
 

@@ -36,4 +36,10 @@ public class Pane_Base : MonoBehaviour
 
     public virtual void OnActorSelected(SceneActor actor)
     { }
+
+    public virtual void OnCleared()
+    { }
+
+    public virtual void OnLoaded()
+    { }
 }

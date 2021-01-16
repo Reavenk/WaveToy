@@ -191,6 +191,167 @@
          d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="path860-5" />
     </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1175-1"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sstart"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(0.3,0,0,0.3,-0.69,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path1173-0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1221-4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1219-1" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Sstart-1"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sstart"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(0.3,0,0,0.3,-0.69,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path875-6" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Send-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path860-4" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1175-9-6"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.3,0,0,0.3,-0.69,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path1173-5-0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1221-2-8"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1219-5-0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Sstart-2-4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sstart"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(0.3,0,0,0.3,-0.69,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path875-3-2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Send-4-4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path860-5-5" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker926-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.3,0,0,0.3,-0.69,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path924-9" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1008-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1006-7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1098-0"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1096-7" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -199,18 +360,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.9195959"
-     inkscape:cx="132.68748"
-     inkscape:cy="508.28125"
+     inkscape:zoom="11.2"
+     inkscape:cx="150.99043"
+     inkscape:cy="608.17228"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="true"
-     inkscape:window-width="1420"
-     inkscape:window-height="1041"
-     inkscape:window-x="2768"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0">
+     inkscape:window-width="2560"
+     inkscape:window-height="1017"
+     inkscape:window-x="2552"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:snap-global="true">
     <inkscape:grid
        type="xygrid"
        id="grid833"
@@ -234,6 +396,28 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="rect1064"
+       width="1"
+       height="4"
+       x="-125.1522"
+       y="103.33236"
+       transform="rotate(-45)"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\MagIcon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.0959166;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="rect1066"
+       width="1.2"
+       height="2.2999969"
+       x="-125.25221"
+       y="105.33236"
+       transform="rotate(-45)"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\MagIcon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker1175);marker-end:url(#marker1221)"
        d="M 26.999999,130 27,134"
@@ -320,6 +504,172 @@
        style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker1098)"
        d="m 42,132 1.999999,-2"
        id="path1094"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.46302px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker1175-1);marker-end:url(#marker1221-4)"
+       d="m 9.9972676,157.46655 1.8e-6,7"
+       id="path835-1"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoTrans.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.463748;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Sstart-1);marker-end:url(#Arrow1Send-3)"
+       d="M 6.4972694,160.96655 H 13.497269"
+       id="path837-0"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoTrans.png" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.463748;stop-color:#000000"
+       id="path839-15"
+       cx="9.9972658"
+       cy="160.96655"
+       r="1.75"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoTrans.png" />
+    <circle
+       style="fill:#000000;stroke:none;stroke-width:0.463748;stop-color:#000000"
+       id="path841-8"
+       cx="18.747276"
+       cy="160.96655"
+       r="1.75"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoRot.png" />
+    <circle
+       style="fill:none;stroke:#000000;stroke-width:0.463748;stroke-miterlimit:4;stroke-dasharray:none;stop-color:#000000"
+       id="path843-6"
+       cx="18.747276"
+       cy="160.96655"
+       r="3.5"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoRot.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.46302px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker1175-9-6);marker-end:url(#marker1221-2-8)"
+       d="m -0.09439896,158.3926 1.7e-6,5.1479"
+       id="path835-8-0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoTransRot.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.463748;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Sstart-2-4);marker-end:url(#Arrow1Send-4-4)"
+       d="M -2.6683552,160.96655 H 2.4795606"
+       id="path837-5-6"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoTransRot.png" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.463748;stop-color:#000000"
+       id="path839-1-8"
+       cx="-0.094400525"
+       cy="160.96655"
+       r="1.75"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoTransRot.png" />
+    <circle
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.463748;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="path1526-2"
+       cx="-0.094397187"
+       cy="160.96655"
+       r="3.5"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoTransRot.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.463748;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker926-5);marker-end:url(#marker1008-5)"
+       d="m 25.33893,157.46655 v 7 h 7.000003"
+       id="path920-4"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoScale.png" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.463748;stop-color:#000000"
+       id="rect922-7"
+       width="3.5"
+       height="3.5"
+       x="27.088928"
+       y="159.21655"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoScale.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.46302px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker1098-0)"
+       d="m 28.838931,160.96655 3.499997,-3.5"
+       id="path1094-4"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="D:\Repos\PhasedArray\Assets\Sprites\icoScale.png" />
+    <circle
+       style="fill:#646464;stroke-width:0.265;stop-color:#000000;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+       id="path1039"
+       cx="-16"
+       cy="160"
+       r="3"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\MagIcon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <circle
+       style="fill:#c8c8c8;stroke-width:0.1;stop-color:#000000;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1"
+       id="path1041"
+       cx="-16"
+       cy="160"
+       r="2"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\MagIcon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.0834635;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="path1043"
+       cx="-15.110285"
+       cy="159.08083"
+       r="0.41731772"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\MagIcon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="path1043-9"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.075612;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       d="m -15.111793,160.18964 c -0.207187,0.0257 -0.354297,0.21453 -0.328594,0.42172 4.68e-4,0.003 9.6e-4,0.006 0.0015,0.009 0.04028,0.40555 -0.05768,0.70325 -0.222842,0.9669 0.483296,-0.23988 0.82771,-0.43483 0.97166,-1.06889 -0.02592,-0.20701 -0.214635,-0.35389 -0.421673,-0.3282 z"
+       sodipodi:nodetypes="ccccccc"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\MagIcon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="path1068"
+       cx="44"
+       cy="161"
+       r="4"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\ClearIco.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="rect1070"
+       width="2"
+       height="6"
+       x="143.95689"
+       y="79.731491"
+       transform="rotate(45)"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\ClearIco.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="rect1072"
+       width="6"
+       height="2"
+       x="141.95689"
+       y="81.731491"
+       transform="rotate(45)"
+       inkscape:export-filename="C:\Users\Reavenk\Desktop\ClearIco.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
   </g>

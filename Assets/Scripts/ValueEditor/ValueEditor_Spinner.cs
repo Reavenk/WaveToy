@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using PxPre.Datum;
+
 public class ValueEditor_Spinner : ValueEditor_Base
 {
     public UnityEngine.UI.InputField input;
     public UnityEngine.UI.Button btnSpinner;
 
-    static ValueBase startingDragValue = null;
+    static Val startingDragValue = null;
     static Vector2 startDrag = Vector2.zero;
 
     public override void Init(Main m, SceneActor actor, EditValue ev)
@@ -31,17 +33,17 @@ public class ValueEditor_Spinner : ValueEditor_Base
     }
 
     public void OnTextChange()
-    { 
-        ValueBase vb = null;
-        if(this.EV.val.ty == ValueBase.Type.Float)
+    {
+        Val vb = null;
+        if(this.EV.val.ty == Val.Type.Float)
         { 
             if(float.TryParse(this.input.text, out float f) == true)
-                vb = new ValueFloat(f);
+                vb = new ValFloat(f);
         }
         else
         {
             if (int.TryParse(this.input.text, out int i) == true)
-                vb = new ValueInt(i);
+                vb = new ValInt(i);
         }
 
         if(vb != null)
@@ -77,8 +79,8 @@ public class ValueEditor_Spinner : ValueEditor_Base
             {
                 UnityEngine.EventSystems.PointerEventData ped = x as UnityEngine.EventSystems.PointerEventData;
 
-                ValueFloat diff = new ValueFloat(-(startDrag.y - ped.position.y));
-                 ValueBase vb = ev.Offset(startingDragValue, diff);
+                ValFloat diff = new ValFloat(-(startDrag.y - ped.position.y));
+                Val vb = ev.Offset(startingDragValue, diff);
                 ev.val.SetValue(vb);
 
                 mgr.NotifyActorModified(actor, ev.name);
@@ -91,8 +93,8 @@ public class ValueEditor_Spinner : ValueEditor_Base
             {
                 UnityEngine.EventSystems.PointerEventData ped = x as UnityEngine.EventSystems.PointerEventData;
 
-                ValueFloat diff = new ValueFloat(-(startDrag.y - ped.position.y));
-                ValueBase vb = ev.Offset(startingDragValue, diff);
+                ValFloat diff = new ValFloat(-(startDrag.y - ped.position.y));
+                Val vb = ev.Offset(startingDragValue, diff);
                 ev.val.SetValue(vb);
 
                 mgr.NotifyActorModified(actor, ev.name);

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using PxPre.Datum;
+
 public class SceneActor
 {
     public enum Type
@@ -24,6 +26,12 @@ public class SceneActor
         Hollow
     }
 
+    public enum RadiationType
+    { 
+        AC,
+        DC
+    }
+
     public GameObject gameObject;
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
@@ -34,29 +42,29 @@ public class SceneActor
     const float posScroll = 0.01f;
     const float radScroll = 0.001f;
 
-    public EditValue enabled = new EditValue("Enabled", new ValueBool(true));
+    public EditValue enabled = new EditValue("Enabled", new ValBool(true));
 
-    public EditValue posx = new EditValue("X", new ValueFloat(0.0f), null, null, new ValueFloat(posScroll));
-    public EditValue posy = new EditValue("Y", new ValueFloat(0.0f), null, null, new ValueFloat(posScroll));
-    public EditValue rot = new EditValue("Rotation", new ValueFloat(0.0f), new ValueFloat(-180.0f), new ValueFloat(180.0f));
+    public EditValue posx = new EditValue("X", new ValFloat(0.0f), null, null, new ValFloat(posScroll));
+    public EditValue posy = new EditValue("Y", new ValFloat(0.0f), null, null, new ValFloat(posScroll));
+    public EditValue rot = new EditValue("Rotation", new ValFloat(0.0f), new ValFloat(-180.0f), new ValFloat(180.0f));
 
-    public EditValue shape = new EditValue("Shape", new ValueEnum(0, "Ellipse", "Square"));
-    public EditValue radius1 = new EditValue("Radius", new ValueFloat(0.5f), null, null, new ValueFloat(radScroll));
-    public EditValue radius2 = new EditValue("Radius2", new ValueFloat(0.5f), null, null, new ValueFloat(radScroll));
-    public EditValue thickness = new EditValue("Thickness", new ValueFloat(0.1f), null, null, new ValueFloat(radScroll));
-    public EditValue squared = new EditValue("Squared", new ValueBool(true));
-    public EditValue fillMode = new EditValue("Fill", new ValueEnum(0, "Filled", "Hollow"));
+    public EditValue shape = new EditValue("Shape", ValEnum.FromEnum<Shape>(0));
+    public EditValue radius1 = new EditValue("Radius", new ValFloat(0.5f), null, null, new ValFloat(radScroll));
+    public EditValue radius2 = new EditValue("Radius2", new ValFloat(0.5f), null, null, new ValFloat(radScroll));
+    public EditValue thickness = new EditValue("Thickness", new ValFloat(0.1f), null, null, new ValFloat(radScroll));
+    public EditValue squared = new EditValue("Squared", new ValBool(true));
+    public EditValue fillMode = new EditValue("Fill", ValEnum.FromEnum<Fill>(0));
 
-    public EditValue angle1 = new EditValue("Angle1", new ValueFloat(-180.0f), new ValueFloat(-180.0f), new ValueFloat(0.0f), new ValueFloat(1.0f));
-    public EditValue angle2 = new EditValue("Angle2", new ValueFloat(180.0f), new ValueFloat(0.0f), new ValueFloat(180.0f), new ValueFloat(1.0f));
+    public EditValue angle1 = new EditValue("Angle1", new ValFloat(-180.0f), new ValFloat(-180.0f), new ValFloat(0.0f), new ValFloat(1.0f));
+    public EditValue angle2 = new EditValue("Angle2", new ValFloat(180.0f), new ValFloat(0.0f), new ValFloat(180.0f), new ValFloat(1.0f));
 
-    public EditValue radiation = new EditValue("Radiation", new ValueEnum(0, "AC", "DC"));
+    public EditValue radiation = new EditValue("Radiation", ValEnum.FromEnum<RadiationType>(0));
 
-    public EditValue actorType = new EditValue("Type", new ValueEnum(0, "Emitter", "Barrier", "Impedance", "Sensor"));
-    public EditValue phase = new EditValue("Phase", new ValueFloat(0.0f), new ValueFloat(0.0f), new ValueFloat(1.0f), new ValueFloat(0.01f));
-    public EditValue power = new EditValue("Power", new ValueFloat(1.0f), new ValueFloat(-2.0f), new ValueFloat(2.0f), new ValueFloat(0.01f));
-    public EditValue frequency = new EditValue("Freq", new ValueFloat(1.0f), new ValueFloat(0.1f), new ValueFloat(10.0f), new ValueFloat(0.01f));
-    public EditValue ior = new EditValue("IOR", new ValueFloat(1.0f), new ValueFloat(0.1f), new ValueFloat(2.0f), new ValueFloat(0.1f));
+    public EditValue actorType = new EditValue("Type", ValEnum.FromEnum<Type>(0));
+    public EditValue phase = new EditValue("Phase", new ValFloat(0.0f), new ValFloat(0.0f), new ValFloat(1.0f), new ValFloat(0.01f));
+    public EditValue power = new EditValue("Power", new ValFloat(1.0f), new ValFloat(-2.0f), new ValFloat(2.0f), new ValFloat(0.01f));
+    public EditValue frequency = new EditValue("Freq", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(10.0f), new ValFloat(0.01f));
+    public EditValue ior = new EditValue("IOR", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(2.0f), new ValFloat(0.1f));
 
 
     public void Destroy()

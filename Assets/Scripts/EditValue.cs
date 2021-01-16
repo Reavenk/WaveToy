@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using PxPre.Datum;
+
 public struct EditValue
 {
     public string name;
 
-    public ValueBase val;
+    public Val val;
 
-    public ValueBase min;
-    public ValueBase max;
+    public Val min;
+    public Val max;
 
-    public ValueBase incr;
+    public Val incr;
 
     public bool BoolVal
     { 
@@ -36,7 +38,7 @@ public struct EditValue
         get => this.val.GetString();
     }
 
-    public EditValue(string name, ValueBase val)
+    public EditValue(string name, Val val)
     {
         this.name = name;
 
@@ -47,7 +49,7 @@ public struct EditValue
         this.incr = null;
     }
 
-    public EditValue(string name, ValueBase val, ValueBase min, ValueBase max)
+    public EditValue(string name, Val val, Val min, Val max)
     {
         this.name = name;
 
@@ -58,7 +60,7 @@ public struct EditValue
         this.incr = null;
     }
 
-    public EditValue(string name, ValueBase val, ValueBase min, ValueBase max, ValueBase incr)
+    public EditValue(string name, Val val, Val min, Val max, Val incr)
     {
         this.name = name;
 
@@ -68,7 +70,7 @@ public struct EditValue
         this.incr = incr;
     }
 
-    public ValueBase Clamp(ValueBase vb)
+    public Val Clamp(Val vb)
     { 
         if(this.min != null)
             vb = this.min.Max(vb);
@@ -79,13 +81,13 @@ public struct EditValue
         return vb;
     }
 
-    public ValueBase Offset(ValueBase orig, ValueBase diff)
+    public Val Offset(Val orig, Val diff)
     {
 
         if(this.incr != null)
             diff = diff.Mul(this.incr);
 
-        ValueBase ret = orig.Add(diff);
+        Val ret = orig.Add(diff);
 
         ret = this.Clamp(ret);
         return ret;

@@ -114,4 +114,93 @@ public class WaveScene
 
         return found;
     }
+
+    public void Clear()
+    {
+        // Might as well reset the time, hopefully it'll help maintain precision
+        // if the app is running for a long period of time.
+        this.time = 0.0f;
+
+        foreach(SceneActor sa in this.actors)
+        { 
+            if(sa.gameObject != null)
+                GameObject.Destroy(sa.gameObject);
+        }
+        this.actors.Clear();
+    }
+
+    public System.Xml.XmlDocument Save(string comment)
+    {
+        System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+
+        System.Xml.XmlElement eleRoot = doc.CreateElement("wavscene");
+        doc.AppendChild(eleRoot);
+
+        if(string.IsNullOrEmpty(comment) == false)
+        {
+            System.Xml.XmlElement eleCom = doc.CreateElement("comment");
+            eleCom.InnerText = comment;
+            eleRoot.AppendChild(eleCom);
+        }
+
+        foreach (SceneActor sa in this.actors)
+        {
+            System.Xml.XmlElement eleActor = doc.CreateElement("actor");
+
+            foreach (EditValue ev in sa.EnumerateAllParams())
+            { 
+                System.Xml.XmlElement eleParam = doc.CreateElement("param");
+                eleParam.SetAttribute("name", ev.name);
+                eleParam.SetAttribute("value", ev.val.GetString());
+
+                eleActor.AppendChild(eleParam);
+            }
+            eleRoot.AppendChild(eleActor);
+        }
+
+        return doc;
+    }
+
+    public bool Load(System.Xml.XmlDocument doc, bool clear, out string comment)
+    { 
+        if(clear == true)
+            this.Clear();
+
+        comment = "";
+
+        foreach (System.Xml.XmlElement ele in doc.DocumentElement)
+        { 
+            if(ele.Name == "actor")
+            { 
+                SceneActor sa = new SceneActor();
+
+                foreach(System.Xml.XmlElement p in ele)
+                { 
+                    if(p.Name != "param")
+                        continue;
+
+                    System.Xml.XmlAttribute attrName = p.Attributes["name"];
+                    if(attrName == null)
+                        continue;
+
+                    EditValue ? ev = sa.GetParam(attrName.Value);
+                    if(ev.HasValue == false)
+                        continue;
+
+                    System.Xml.XmlAttribute attrValue = p.Attributes["value"];
+                    if(attrValue == null)
+                        continue;
+
+                    ev.Value.val.SetString( attrValue.Value);
+                }
+
+                sa.UpdateGeometry(this);
+                this.AddActor(sa);
+            }
+            else if(ele.Name == "comment")
+                comment = ele.InnerText;
+        }
+
+        return true;
+    }
 }
