@@ -17,7 +17,7 @@ public class Pane_Info : Pane_Base
 
         PxPre.UIL.UILStack stk = new PxPre.UIL.UILStack(this.uiFactory, host);
         stk.PushVertSizer();
-        stk.AddWrapText("Yo ho ho and a bottle of rum!");
+        stk.AddWrapText("Add content to create sim.");
 
     }
 }

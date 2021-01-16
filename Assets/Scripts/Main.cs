@@ -14,7 +14,8 @@ public class Main :
     { 
         Translate,
         Rotate,
-        Drag
+        Drag,
+        Scale
     }
 
     int dim = 1024;
@@ -68,12 +69,14 @@ public class Main :
     public UnityEngine.UI.Image manipTransIcon;
     public UnityEngine.UI.Image manipRotIcon;
     public UnityEngine.UI.Image manipDragIcon;
+    public UnityEngine.UI.Image manipScaleIcon;
 
     HashSet<SceneActor> dirtyActors = new HashSet<SceneActor>();
 
     public bool playing = true;
 
     SceneActor selection;
+    public SceneActor Selected {get=>this.selection; }
 
     private void Awake()
     {
@@ -239,8 +242,6 @@ public class Main :
     public void OnPulldown_View()
     {
         PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
-        stk.AddAction(this.zoomControls.activeSelf, null, "Zoom", ()=>{ this.OnMenu_ToggleZoom(); });
-        stk.AddSeparator();
         stk.AddAction(this.activeViewMat == this.viewMatRedGreen, null, "Red/Green", () => { this.OnMenu_SetRedGreen(); });
         stk.AddAction(this.activeViewMat == this.viewMatGrayscale, null, "Greyscale", () => { this.OnMenu_SetGreyscale(); });
         stk.AddSeparator();
@@ -264,11 +265,6 @@ public class Main :
             this.canvas,
             stk.Root,
             this.pulldownHelp);
-    }
-
-    void OnMenu_ToggleZoom()
-    { 
-        this.zoomControls.SetActive( !this.zoomControls.activeSelf );
     }
 
     void OnMenu_SetRedGreen()
@@ -367,19 +363,18 @@ public class Main :
 
     void CreateAddMenu(Vector2 createPos, PxPre.DropMenu.StackUtil stk)
     {
+        const float obsRad = 0.5f;
         stk.PushMenu("Create Barrier");
-        stk.AddAction("Box", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Square, SceneActor.Fill.Filled); });
-        stk.AddAction("Cup", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Hollow); });
-        stk.AddAction("Ellipse", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
-        stk.AddAction("Circle", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled); });
+        stk.AddAction("Box", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Square, SceneActor.Fill.Filled, obsRad, obsRad); });
+        stk.AddAction("Circle", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled, obsRad, obsRad); });
+        stk.AddAction("Beam", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Square, SceneActor.Fill.Filled, obsRad * 2, obsRad / 10.0f); });
+        stk.AddAction("Dish", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Hollow, obsRad * 2.0f, obsRad * 2.0f, -45.0f, 45.0f); });
+        stk.AddAction("Pin", () => { this.CreateShape(createPos, SceneActor.Type.Barrier, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled, 0.05f, 0.05f); });
         stk.PopMenu();
         //
         stk.PushMenu("Create Emitter");
-        stk.AddAction("Yo1", null);
-        stk.PopMenu();
-        //
-        stk.PushMenu("Create Sensor");
-        stk.AddAction("Yo1", null);
+        stk.AddAction("Pin Emitter", () => { this.CreateShape(createPos, SceneActor.Type.Emitter, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled, 0.05f, 0.05f); });
+        stk.AddAction("Beam Emitter", () => { this.CreateShape(createPos, SceneActor.Type.Emitter, SceneActor.Shape.Square, SceneActor.Fill.Filled, obsRad * 2, obsRad / 10.0f); });
         stk.PopMenu();
     }
 
@@ -403,7 +398,11 @@ public class Main :
 
     public void RemoveActor(SceneActor actor)
     {
-        actor.Destroy();
+        if(this.waveScene.DestroyActor(actor) == false)
+            return;
+
+        this.NotifyActorRemoved(actor);
+
     }
 
     protected void NotifyActorAdded(SceneActor actor)
@@ -479,7 +478,7 @@ public class Main :
     void PxPre.UIDock.IDockListener.OnClosing(PxPre.UIDock.Root r, PxPre.UIDock.Window win)
     {}
 
-    public void CreateShape(Vector2 pos, SceneActor.Type type, SceneActor.Shape shape, SceneActor.Fill fill)
+    public void CreateShape(Vector2 pos, SceneActor.Type type, SceneActor.Shape shape, SceneActor.Fill fill, float radius1, float radius2, float angle1 = -180.0f, float angle2 = 180.0f)
     { 
         SceneActor act = new SceneActor();
 
@@ -487,6 +486,14 @@ public class Main :
         act.posy.val.SetFloat(pos.y);
 
         act.rot.val.SetFloat(0.0f);
+
+        act.radius1.FloatVal = radius1;
+        act.radius2.FloatVal = radius2;
+
+        act.squared.BoolVal = (radius1 == radius2);
+
+        act.angle1.FloatVal = angle1;
+        act.angle2.FloatVal = angle2;
 
         act.shape.val.SetInt((int)shape);
         act.actorType.val.SetInt((int)type);
@@ -502,6 +509,7 @@ public class Main :
     ////////////////////////////////////////////////////////////////////////////////
     
     Vector2 originalSimDragClick = Vector2.zero;
+    Vector2 origDragRadii = Vector2.one;
     SceneActor draggedActor = null;
 
     public void OnSimEvent_OnBeginDrag(UnityEngine.EventSystems.PointerEventData ped)
@@ -564,6 +572,27 @@ public class Main :
                     this.NotifyActorModified(draggedActor, "X");
                     this.NotifyActorModified(draggedActor, "Y");
                 }
+                else if(this.manipMode == ManipMode.Scale)
+                {
+                    Vector2 newLocal = this.draggedActor.gameObject.transform.worldToLocalMatrix.MultiplyPoint(r.Value.origin);
+
+                    float x = this.origDragRadii.x;
+                    float y = this.origDragRadii.y;
+
+                    if(Mathf.Abs(this.originalSimDragClick.x) > 0.0f)
+                        x *= Mathf.Abs(newLocal.x / this.originalSimDragClick.x);
+
+                    if (Mathf.Abs(this.originalSimDragClick.y) > 0.0f)
+                        y *= Mathf.Abs(newLocal.y / this.originalSimDragClick.y);
+
+                    if(draggedActor.squared.BoolVal == true)
+                        y = x;
+
+                    this.draggedActor.radius1.FloatVal = x;
+                    this.draggedActor.radius2.FloatVal = y;
+                    this.NotifyActorModified(draggedActor, draggedActor.radius1);
+                    this.NotifyActorModified(draggedActor, draggedActor.radius2);
+                }
             }
 
         }
@@ -589,6 +618,8 @@ public class Main :
 
     public void OnSimEvent_OnPointerDown(UnityEngine.EventSystems.PointerEventData ped)
     {
+        this.draggedActor = null;
+
         Ray ? r = GetRayAtUIMouse(ped.position);
         SceneActorTag sat = null;
         if(r.HasValue == true)
@@ -615,6 +646,8 @@ public class Main :
                 { 
                     stk.PushMenu("Set Shape");
                         stk.AddAction(
+                            sat.actor.shape.IntVal == (int)SceneActor.Shape.Ellipse,
+                            null,
                             "Ellipse", 
                             ()=>
                             { 
@@ -622,6 +655,8 @@ public class Main :
                                 this.NotifyActorModified(sat.actor, sat.actor.shape.name);
                             });
                         stk.AddAction(
+                            sat.actor.shape.IntVal == (int)SceneActor.Shape.Square,
+                            null,
                             "Rectangle", 
                             ()=> 
                             { 
@@ -632,6 +667,8 @@ public class Main :
 
                     stk.PushMenu("Set Fill");
                         stk.AddAction(
+                            sat.actor.fillMode.IntVal == (int)SceneActor.Fill.Hollow,
+                            null,
                             "Hollow", 
                             () => 
                             {
@@ -639,6 +676,8 @@ public class Main :
                                 this.NotifyActorModified(sat.actor, sat.actor.fillMode.name);
                             });
                         stk.AddAction(
+                            sat.actor.fillMode.IntVal == (int)SceneActor.Fill.Filled,
+                            null,
                             "Fill", 
                             () => 
                             {
@@ -649,6 +688,8 @@ public class Main :
 
                     stk.PushMenu("Set Type");
                         stk.AddAction(
+                            sat.actor.actorType.IntVal == (int)SceneActor.Type.Emitter,
+                            null,
                             "Emitter", 
                             () => 
                             {
@@ -656,6 +697,8 @@ public class Main :
                                 this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
                             });
                         stk.AddAction(
+                            sat.actor.actorType.IntVal == (int)SceneActor.Type.Barrier,
+                            null,
                             "Barrier", 
                             () => 
                             {
@@ -663,6 +706,8 @@ public class Main :
                                 this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
                             });
                         stk.AddAction(
+                            sat.actor.actorType.IntVal == (int)SceneActor.Type.Impedance,
+                            null,
                             "Impedance", 
                             () => 
                             {
@@ -670,6 +715,8 @@ public class Main :
                                 this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
                             });
                         stk.AddAction(
+                            sat.actor.actorType.IntVal == (int)SceneActor.Type.Sensor,
+                            null,
                             "Sensor", 
                             () => 
                             {
@@ -706,6 +753,11 @@ public class Main :
 
         if (draggedActor != null)
         {
+            this.origDragRadii = 
+                new Vector2(
+                    sat.actor.radius1.FloatVal, 
+                    sat.actor.radius2.FloatVal);
+
             this.originalSimDragClick = 
                 sat.transform.worldToLocalMatrix.MultiplyPoint(r.Value.origin);
         }
@@ -718,6 +770,7 @@ public class Main :
 
     public void OnSimEvent_OnPointerUp(UnityEngine.EventSystems.PointerEventData ped)
     {
+        this.draggedActor = null;
     }
 
     public void OnSimEvent_OnPointerEnter(UnityEngine.EventSystems.PointerEventData ped)
@@ -733,15 +786,17 @@ public class Main :
 
         float uz = this.zoom + ped.scrollDelta.y * 0.05f;
         this.SetZoom(uz, true);
-
-
-        Debug.Log(ped.scrollDelta);
     }
 
     public void SkipSimSteps(int steps)
     { 
         for(int i = 0; i < steps; ++i)
             this.Integrate();
+    }
+
+    public void OnButton_SkipSteps1()
+    {
+        this.SkipSimSteps(1);
     }
 
     public void OnButton_SkipSteps10()
@@ -777,6 +832,12 @@ public class Main :
         this.RefershManipIcons();
     }
 
+    public void OnButton_ModeScale()
+    {
+        this.manipMode = ManipMode.Scale;
+        this.RefershManipIcons();
+    }
+
     public void RefershManipIcons()
     {
         float f = (this.manipMode == ManipMode.Translate) ? 1.0f : 0.2f;
@@ -787,5 +848,8 @@ public class Main :
 
         f = (this.manipMode == ManipMode.Drag) ? 1.0f : 0.2f;
         this.manipDragIcon.color = new Color(1.0f, 1.0f, 1.0f, f);
+
+        f = (this.manipMode == ManipMode.Scale) ? 1.0f : 0.2f;
+        this.manipScaleIcon.color = new Color(1.0f, 1.0f, 1.0f, f);
     }
 }

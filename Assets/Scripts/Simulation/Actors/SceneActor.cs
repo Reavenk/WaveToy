@@ -34,6 +34,8 @@ public class SceneActor
     const float posScroll = 0.01f;
     const float radScroll = 0.001f;
 
+    public EditValue enabled = new EditValue("Enabled", new ValueBool(true));
+
     public EditValue posx = new EditValue("X", new ValueFloat(0.0f), null, null, new ValueFloat(posScroll));
     public EditValue posy = new EditValue("Y", new ValueFloat(0.0f), null, null, new ValueFloat(posScroll));
     public EditValue rot = new EditValue("Rotation", new ValueFloat(0.0f), new ValueFloat(-180.0f), new ValueFloat(180.0f));
@@ -99,6 +101,8 @@ public class SceneActor
             sat.actor = this;
         }
 
+        this.gameObject.SetActive(this.enabled.BoolVal);
+
         this.gameObject.transform.localPosition = 
             new Vector3(
                 this.posx.val.GetFloat(), 
@@ -142,8 +146,6 @@ public class SceneActor
 
             this.mesh.SetVertices(rv);
             this.mesh.SetIndices( ri, MeshTopology.Triangles, 0);
-
-            Debug.Log("UpdatedSquare()");
         }
         else if (this.shape.val.GetInt() == (int)Shape.Ellipse)
         {
@@ -219,9 +221,6 @@ public class SceneActor
                 this.mesh.SetVertices(rv);
                 this.mesh.SetIndices(ri, MeshTopology.Triangles, 0);
             }
-
-
-            Debug.Log("UpdatedCircle()");
         }
 
         int ty = this.actorType.val.GetInt();
@@ -252,6 +251,7 @@ public class SceneActor
 
     public IEnumerable<EditValue> EnumerateAllParams()
     {
+        yield return this.enabled;
         yield return this.posx;
         yield return this.posy;
         yield return this.rot;
@@ -273,6 +273,7 @@ public class SceneActor
 
     public IEnumerable<EditValue> EnumerateRelevantParams()
     { 
+        yield return this.enabled;
         yield return this.posx;
         yield return this.posy;
         yield return this.rot;

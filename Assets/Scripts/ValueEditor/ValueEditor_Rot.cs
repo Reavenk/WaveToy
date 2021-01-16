@@ -56,12 +56,12 @@ public class ValueEditor_Rot : ValueEditor_Base
 
     public void OnButtonCCW()
     { 
-        this.SetAngle(this.EV.val.GetFloat() - 15.0f);
+        this.SetAngle(this.EV.val.GetFloat() + 15.0f);
     }
 
     public void OnButtonCW()
     {
-        this.SetAngle(this.EV.val.GetFloat() + 15.0f);
+        this.SetAngle(this.EV.val.GetFloat() - 15.0f);
     }
 
     public void OnSlider()

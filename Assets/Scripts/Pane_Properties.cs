@@ -41,9 +41,19 @@ public class Pane_Properties :
     public GameObject prefabWSpinner;
     public GameObject prefabWRotation;
 
+    public Sprite tyicoEllipseFilled;
+    public Sprite tyicoEllipseHollow;
+    public Sprite tyicoRectFilled;
+    public Sprite tyicoRectHollow;
+
+    public Sprite icotogOn;
+    public Sprite icotogOff;
+
     Dictionary<SceneActor, PxPre.Tree.Node> actorToNode = new Dictionary<SceneActor, PxPre.Tree.Node>();
     Dictionary<PxPre.Tree.Node, SceneActor> nodeToActor = new Dictionary<PxPre.Tree.Node, SceneActor>();
     Dictionary<SceneActor, NodeWidgets> actorToParams = new Dictionary<SceneActor, NodeWidgets>();
+
+    public UnityEngine.UI.Toggle showAllToggle;
 
 
     private void Start()
@@ -87,12 +97,80 @@ public class Pane_Properties :
     public override void OnActorAdded(SceneActor actor)
     { 
         PxPre.Tree.Node actorNode = this.tree.AddNode("Actor", this.nodeShapes);
+        RefreshActorNodeIcons(actor, actorNode);
         this.nodeToActor.Add(actorNode, actor);
         this.actorToNode.Add(actor, actorNode);
         this.actorToParams.Add(actor, new NodeWidgets());
 
         this.RefreshActorParams(actor);
 
+    }
+
+    public void RebuildActorTree()
+    { 
+        this.nodeShapes.DestroyChildren();
+
+        foreach(KeyValuePair < SceneActor, NodeWidgets > kvp in this.actorToParams)
+            kvp.Value.Destroy();
+
+        if(this.showAllToggle.isOn == true)
+            this.nodeShapes.Label = "Shapes";
+        else
+            this.nodeShapes.Label = "Selected";
+
+        this.actorToNode.Clear();
+        this.nodeToActor.Clear();
+        this.actorToParams.Clear();
+
+        if (this.showAllToggle.isOn == true)
+        { 
+            foreach(SceneActor actor in this.mgr.waveScene.Actors)
+            {
+                PxPre.Tree.Node actorNode = this.tree.AddNode("Actor", this.nodeShapes);
+                RefreshActorNodeIcons(actor, actorNode);
+                this.nodeToActor.Add(actorNode, actor);
+                this.actorToNode.Add(actor, actorNode);
+                this.actorToParams.Add(actor, new NodeWidgets());
+            }
+
+            foreach (SceneActor actor in this.mgr.waveScene.Actors)
+                this.RefreshActorParams(actor);
+        }
+        else if(this.mgr.Selected != null)
+        { 
+            this.OnActorAdded(this.mgr.Selected);
+        }
+    }
+
+    protected void RefreshActorNodeIcons(SceneActor actor, PxPre.Tree.Node actorNode)
+    {
+        actorNode.SetIcon(
+            "enabled", 
+            true,
+            actor.enabled.BoolVal ? this.icotogOn : this.icotogOff, 
+            (x, y, z) => 
+            {
+                actor.enabled.BoolVal = !actor.enabled.BoolVal;
+                this.mgr.NotifyActorModified(actor, actor.enabled);
+            });
+
+        int fill = actor.fillMode.IntVal;
+        switch(actor.shape.IntVal)
+        {
+            case (int)SceneActor.Shape.Ellipse:
+                if(fill == (int)SceneActor.Fill.Filled)
+                    actorNode.SetIcon("icon", true, this.tyicoEllipseFilled, (x, y, z) => { });
+                else
+                    actorNode.SetIcon("icon", true, this.tyicoEllipseHollow, (x, y, z) => { });
+                break;
+
+            case (int)SceneActor.Shape.Square:
+                if (fill == (int)SceneActor.Fill.Filled)
+                    actorNode.SetIcon("icon", true, this.tyicoRectFilled, (x, y, z) => { });
+                else
+                    actorNode.SetIcon("icon", true, this.tyicoRectHollow, (x, y, z) => { });
+                break;
+        }
     }
 
     void RefreshActorParams(SceneActor actor)
@@ -199,10 +277,11 @@ public class Pane_Properties :
                 kvp.Value.param.gameObject.SetActive(true);
                 RectTransform rtParam = kvp.Value.param.rectTransform;
 
+                const float horizPadd = 5.0f;
                 rtParam.anchorMin = new Vector2(0.0f, 1.0f);
                 rtParam.anchorMax = new Vector2(1.0f, 1.0f);
-                rtParam.offsetMin = new Vector2(0.0f, Mathf.Min(rt.offsetMin.y, rt.offsetMax.y - kvp.Value.node.MinHeight));
-                rtParam.offsetMax = new Vector2(0.0f, rt.offsetMax.y);
+                rtParam.offsetMin = new Vector2(horizPadd, Mathf.Min(rt.offsetMin.y, rt.offsetMax.y - kvp.Value.node.MinHeight));
+                rtParam.offsetMax = new Vector2(-horizPadd, rt.offsetMax.y);
             }
         }
     }
@@ -242,16 +321,29 @@ public class Pane_Properties :
                 ev.Value.val.ty == ValueBase.Type.Bool)
             {
                 RefreshActorParams(actor);
+
+                if(this.actorToNode.TryGetValue(actor, out PxPre.Tree.Node v) == true)
+                    RefreshActorNodeIcons(actor, v);
             }
         }
     }
 
     public override void OnActorSelected(SceneActor actor)
     { 
-        if(this.actorToNode.TryGetValue(actor, out PxPre.Tree.Node v) == true)
-        { 
-            this.tree.SelectNode(v, true);
+        if(this.showAllToggle.isOn == false)
+            this.RebuildActorTree();
+        else
+        {
+            if(this.actorToNode.TryGetValue(actor, out PxPre.Tree.Node v) == true)
+            { 
+                this.tree.SelectNode(v, true);
+            }
         }
+    }
+
+    public void OnToggle_ViewAll()
+    { 
+        this.RebuildActorTree();
     }
 
     ////////////////////////////////////////////////////////////////////////////////

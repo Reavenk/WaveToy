@@ -22,6 +22,7 @@ public class WaveScene
     public float Time {get=>this.time; }
 
     List<SceneActor> actors = new List<SceneActor>();
+    public IEnumerable<SceneActor> Actors {get => this.actors; }
 
     public bool HasActor(SceneActor actor)
     { 
@@ -104,5 +105,13 @@ public class WaveScene
         this.waveSim.CycleSignalBuffers();
 
         this.time += 1.0f / 30.0f;
+    }
+
+    public bool DestroyActor(SceneActor actor)
+    {
+        bool found = this.actors.Remove(actor);
+        actor.Destroy();
+
+        return found;
     }
 }
