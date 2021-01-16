@@ -33,7 +33,7 @@ public class Pane_Properties :
     public UnityEngine.UI.ScrollRect treeScroll;
     public UnityEngine.UI.ScrollRect optionScroll;
 
-    public bool treesSyncRecursionGuard = false;
+    public int treesSyncRecursionGuard = 0;
 
     PxPre.Tree.Node nodeWorld;
     PxPre.Tree.Node nodeShapes;
@@ -60,32 +60,35 @@ public class Pane_Properties :
 
     private void Start()
     {
+        const int treeRecursionLimit = 0;
         this.treeScroll.onValueChanged.AddListener(
             (x)=>
             { 
-                if(this.treesSyncRecursionGuard == true)
+                if(this.treesSyncRecursionGuard > treeRecursionLimit)
                     return;
-
-                this.treesSyncRecursionGuard = true;
-
+                
+                ++this.treesSyncRecursionGuard;
+                
                 this.optionScroll.verticalNormalizedPosition =
                     this.treeScroll.verticalNormalizedPosition;
+                this.StartCoroutine(_SetVertScroll(this.optionScroll, this.treeScroll.verticalNormalizedPosition));
 
-                this.treesSyncRecursionGuard = false;
+                --this.treesSyncRecursionGuard;
             });
 
         this.optionScroll.onValueChanged.AddListener(
             (x)=>
             { 
-                if(this.treesSyncRecursionGuard == true)
+                if(this.treesSyncRecursionGuard > treeRecursionLimit)
                     return;
-
-                this.treesSyncRecursionGuard = true;
-
+                
+                ++this.treesSyncRecursionGuard;
+                
                 this.treeScroll.verticalNormalizedPosition = 
                     this.optionScroll.verticalNormalizedPosition;
+                this.StartCoroutine(_SetVertScroll(this.treeScroll, this.optionScroll.verticalNormalizedPosition));
 
-                this.treesSyncRecursionGuard = false;
+                --this.treesSyncRecursionGuard;
             });
 
         this.tree.subscribers.Add(this);
@@ -94,6 +97,15 @@ public class Pane_Properties :
         this.tree.AddNode("Decay", this.nodeWorld);
 
         this.nodeShapes = this.tree.AddNode("Shapes", null);
+    }
+
+    public IEnumerator _SetVertScroll(UnityEngine.UI.ScrollRect sr, float normPos)
+    {
+        yield return new WaitForEndOfFrame();
+
+        ++this.treesSyncRecursionGuard;
+        sr.verticalNormalizedPosition = normPos;
+        --this.treesSyncRecursionGuard;
     }
 
     public override void OnActorAdded(SceneActor actor)
@@ -133,6 +145,13 @@ public class Pane_Properties :
                 this.nodeToActor.Add(actorNode, actor);
                 this.actorToNode.Add(actor, actorNode);
                 this.actorToParams.Add(actor, new NodeWidgets());
+
+                if(actor == this.mgr.Selected)
+                { 
+                    ++this.recurseGuard;
+                    actorNode.Selected = true;
+                    --this.recurseGuard;
+                }
             }
 
             foreach (SceneActor actor in this.mgr.waveScene.Actors)
@@ -334,12 +353,16 @@ public class Pane_Properties :
     { 
         if(this.showAllToggle.isOn == false)
             this.RebuildActorTree();
-        else
+        else if(actor != null)
         {
             if(this.actorToNode.TryGetValue(actor, out PxPre.Tree.Node v) == true)
             { 
                 this.tree.SelectNode(v, true);
             }
+        }
+        else
+        { 
+            this.tree.DeselectAll();
         }
     }
 
@@ -376,8 +399,30 @@ public class Pane_Properties :
     {
     }
 
+    int recurseGuard = 0;
     void PxPre.Tree.ITreeHandler.OnNodeSelected(PxPre.Tree.Tree tree, PxPre.Tree.Node node, bool selected)
     {
+        if(this.showAllToggle.isOn == false)
+            return;
+
+        if(this.recurseGuard > 0)
+            return;
+
+        ++this.recurseGuard;
+
+        for(PxPre.Tree.Node it = node; it != null; it = it.Parent)
+        {
+            if(nodeToActor.TryGetValue(it, out SceneActor actor) == true)
+            { 
+                this.mgr.SelectActor(actor);
+                --this.recurseGuard;
+                return;
+            }
+        }
+
+        this.mgr.SelectActor(null);
+
+        --this.recurseGuard;
     }
 
     void PxPre.Tree.ITreeHandler.OnNodeClicked(PxPre.Tree.Tree tree, PxPre.Tree.Node node)

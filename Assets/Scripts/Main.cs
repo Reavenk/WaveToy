@@ -44,6 +44,7 @@ public class Main :
 
     public Material viewMatRedGreen;
     public Material viewMatGrayscale;
+    public Material viewMatSpectrum;
     Material activeViewMat = null;
 
     float zoom = 1.0f;
@@ -145,6 +146,8 @@ public class Main :
         this.dockSys.ForceLayout();
         this.dockSys.ResizeAddressWithProportions(null, new float [] {1.0f, 2.0f });
         this.dockSys.ResizeAddressWithProportions(new int[]{0}, new float[] { 3.0f, 1.0f });
+
+        this.SetZoom(0.0f, true);
     }
 
     void Update()
@@ -309,8 +312,9 @@ public class Main :
     public void OnPulldown_View()
     {
         PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
-        stk.AddAction(this.activeViewMat == this.viewMatRedGreen, null, "Red/Green", () => { this.OnMenu_SetRedGreen(); });
-        stk.AddAction(this.activeViewMat == this.viewMatGrayscale, null, "Greyscale", () => { this.OnMenu_SetGreyscale(); });
+        stk.AddAction(this.activeViewMat == this.viewMatRedGreen, null,     "Red/Green",    () => { this.OnMenu_SetRedGreen(); });
+        stk.AddAction(this.activeViewMat == this.viewMatGrayscale, null,    "Greyscale",    () => { this.OnMenu_SetGreyscale(); });
+        stk.AddAction(this.activeViewMat == this.viewMatSpectrum, null,     "Spectrum",     () => { this.OnMenu_SetSpectrum(); });
         stk.AddSeparator();
         stk.AddAction(this.winProperties != null, null, "Properties", () => { this.OnMenu_Properties(); });
         stk.AddAction(this.winInfo != null, null, "Info", () => { this.OnMenu_Info(); });
@@ -335,15 +339,23 @@ public class Main :
     }
 
     void OnMenu_SetRedGreen()
-    { 
-        this.activeViewMat = this.viewMatRedGreen;
-        this.activeViewMat.SetTexture("_Obs", this.waveSim.SimObstacles);
-        this.img.material = this.activeViewMat;
+    {
+        SetViewMaterial(this.activeViewMat);
     }
 
     void OnMenu_SetGreyscale()
-    { 
-        this.activeViewMat = this.viewMatGrayscale;
+    {
+        SetViewMaterial(this.viewMatGrayscale);
+    }
+
+    void OnMenu_SetSpectrum()
+    {
+        SetViewMaterial(this.viewMatSpectrum);
+    }
+
+    void SetViewMaterial(Material mat)
+    {
+        this.activeViewMat = mat;
         this.activeViewMat.SetTexture("_Obs", this.waveSim.SimObstacles);
         this.img.material = this.activeViewMat;
     }

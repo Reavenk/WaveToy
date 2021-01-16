@@ -13,3 +13,9 @@
 [submodule "Assets/Refs/UILayout_Core"]
 	path = Assets/Refs/UILayout_Core
 	url = https://github.com/Reavenk/UILayout_Core.git
+[submodule "Assets/Refs/Datum"]
+	path = Assets/Refs/Datum
+	url = https://github.com/Reavenk/Datum.git
+[submodule "Assets/Refs/Tooltip"]
+	path = Assets/Refs/Tooltip
+	url = https://github.com/Reavenk/Tooltip.git
