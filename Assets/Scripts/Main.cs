@@ -297,7 +297,6 @@ public class Main :
     {
         PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
         stk.AddAction("Clear Signal", ()=>{ this.OnMenu_ClearSignal(); });
-        stk.AddAction("Clear Scene", ()=>{ this.OnMenu_ClearScene(); });
         stk.PushMenu("Scenarios");
 
         foreach(DemoFile df in this.demoScenarios)
@@ -393,11 +392,6 @@ public class Main :
     void OnMenu_ClearSignal()
     { 
         this.waveSim.ClearBuffers();
-    }
-
-    void OnMenu_ClearScene()
-    { 
-        this.Clear();
     }
 
 
