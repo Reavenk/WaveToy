@@ -71,9 +71,6 @@ public class Main :
 
     public WaveScene waveScene;
     public WaveSimulation waveSim;
-
-    public UnityEngine.UI.Image dragReticule;
-    public UnityEngine.UI.Text dragNotice;
     
     public PxPre.UIL.Factory uiFactory;
 
@@ -148,8 +145,6 @@ public class Main :
 
 
         this.zoomSlider.value = 1.0f;
-
-        this.DisableAddNotices();
 
         this.RefershManipIcons();
 
@@ -239,26 +234,6 @@ public class Main :
     {
         this.waveScene.Integrate();
         this.img.texture = this.waveSim.SignalRecent;
-    }
-
-    void DisableAddNotices()
-    {
-        this.dragReticule.gameObject.SetActive(false);
-        this.dragNotice.gameObject.SetActive(false);
-    }
-
-    void EnableAddDrag()
-    {
-        this.dragReticule.gameObject.SetActive(true);
-        this.dragNotice.gameObject.SetActive(true);
-        this.dragNotice.text = "Drop to Specify Creation Location";
-    }
-
-    void EnableAddClick()
-    {
-        this.dragReticule.gameObject.SetActive(false);
-        this.dragNotice.gameObject.SetActive(true);
-        this.dragNotice.text = "Select Creation Location.";
     }
 
     public void OnSlider_Zoom()
@@ -425,10 +400,6 @@ public class Main :
         this.Clear();
     }
 
-    public void DefferedAddDrag_OnBeginDrag(UnityEngine.EventSystems.PointerEventData eventData)
-    { 
-        this.EnableAddDrag();
-    }
 
     public Ray ? GetRayAtUIMouse(Vector2 mouse)
     {
@@ -451,26 +422,6 @@ public class Main :
         return ray;
     }
 
-    public void DefferedAddDrag_OnEndDrag(UnityEngine.EventSystems.PointerEventData eventData)
-    {
-        this.DisableAddNotices();
-
-        Ray ? r = GetRayAtUIMouse(eventData.position);
-        if(r.HasValue == false)
-            return;
-
-        Vector2 insertionPt = r.Value.origin;
-
-        PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
-        this.CreateAddMenu(insertionPt, stk);
-        
-
-        PxPre.DropMenu.DropMenuSingleton.MenuInst.CreateDropdownMenu(
-            this.canvas, 
-            stk.Root, 
-            eventData.position);
-            
-    }
 
     void CreateAddMenu(Vector2 createPos, PxPre.DropMenu.StackUtil stk)
     {
@@ -487,10 +438,6 @@ public class Main :
         stk.AddAction("Pin Emitter", () => { this.CreateShape(createPos, SceneActor.Type.Emitter, SceneActor.Shape.Ellipse, SceneActor.Fill.Filled, 0.05f, 0.05f); });
         stk.AddAction("Beam Emitter", () => { this.CreateShape(createPos, SceneActor.Type.Emitter, SceneActor.Shape.Square, SceneActor.Fill.Filled, obsRad * 2, obsRad / 10.0f); });
         stk.PopMenu();
-    }
-
-    public void DefferedAddDrag_OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
-    {
     }
 
     public IEnumerable<Pane_Base> Panes()
