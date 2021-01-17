@@ -374,7 +374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 8.501038, y: -28.499994}
+  m_AnchoredPosition: {x: -8.500649, y: -28.500292}
   m_SizeDelta: {x: 1000, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &92017685
@@ -833,8 +833,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 607183061}
   m_HandleRect: {fileID: 607183060}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.94299895
+  m_Value: 1.0000054
+  m_Size: 0.94228566
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1101,8 +1101,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1747395036}
   m_HandleRect: {fileID: 1747395035}
   m_Direction: 0
-  m_Value: -0.000057444853
-  m_Size: 0.983
+  m_Value: 1.0000359
+  m_Size: 0.98127526
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2149,6 +2149,7 @@ MonoBehaviour:
     inputLayer: 9
     impedanceLayer: 11
     drawShader: {fileID: 4800000, guid: 206f13be4be0a9d4cb945903bfa96ce9, type: 3}
+    drawShaderAdd: {fileID: 4800000, guid: 8f97e039e98125e4e867dec07d57ce94, type: 3}
     simMaterial: {fileID: 2100000, guid: 4cfea5524a48b094caec7f113ed0ef9a, type: 2}
     matObstacle: {fileID: 2100000, guid: cd1ad7709d53b2f41958c92c6619013d, type: 2}
     simObstacleCam: {fileID: 1171332822}

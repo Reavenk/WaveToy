@@ -1,5 +1,5 @@
 <wavscene>
-  <comment>Comment</comment>
+  <comment>Demo for standing waves. If the distance between two ends of a point is an integer multiple of the wavelength, only construction and deconstructive interference is observed. As time passes, notice how the interreflection on the left builds up because of its container size.</comment>
   <actor>
     <param name="Enabled" value="True" />
     <param name="X" value="-0.75" />

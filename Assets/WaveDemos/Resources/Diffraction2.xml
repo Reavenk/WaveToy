@@ -1,5 +1,5 @@
 <wavscene>
-  <comment>Comment</comment>
+  <comment>The classic diffraction demo, except two slits, offset to the sides.</comment>
   <actor>
     <param name="Enabled" value="True" />
     <param name="X" value="0" />

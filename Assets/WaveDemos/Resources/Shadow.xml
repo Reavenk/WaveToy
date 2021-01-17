@@ -1,5 +1,5 @@
 <wavscene>
-  <comment>Comment</comment>
+  <comment>Shows a big obstacle creating a shadow region behind it.</comment>
   <actor>
     <param name="Enabled" value="True" />
     <param name="X" value="-2.58" />

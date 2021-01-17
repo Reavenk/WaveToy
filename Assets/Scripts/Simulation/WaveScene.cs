@@ -10,6 +10,8 @@ public class WaveScene
     public int impedanceLayer;
 
     public Shader drawShader;
+    public Shader drawShaderAdd;
+
     public Material simMaterial;
     public Material matObstacle;
 

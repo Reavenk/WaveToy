@@ -110,6 +110,8 @@ public class Pane_Properties :
         this.decayEd.Init(this.mgr, null, this.mgr.evDecay);
         this.decayEd.OnUpdateValue();
         this.environmentItems.Add(this.nodeDecay, this.decayEd);
+
+        this.tree.LayoutTree();
     }
 
     public IEnumerator _SetVertScroll(UnityEngine.UI.ScrollRect sr, float normPos)

@@ -1,5 +1,5 @@
 <wavscene>
-  <comment>Comment</comment>
+  <comment>Shows how obstables of a small enough size, relative to the wavelength, do not cause much interference. Instead, a small shadow forms but it then quickly "healed" from diffraction.</comment>
   <actor>
     <param name="Enabled" value="True" />
     <param name="X" value="-3.153327" />

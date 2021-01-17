@@ -32,6 +32,12 @@ public class SceneActor
         DC
     }
 
+    public enum EmissionMode
+    { 
+        Reflective,
+        Additive
+    }
+
     public GameObject gameObject;
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
@@ -65,6 +71,8 @@ public class SceneActor
     public EditValue power = new EditValue("Power", new ValFloat(1.0f), new ValFloat(-2.0f), new ValFloat(2.0f), new ValFloat(0.01f));
     public EditValue frequency = new EditValue("Freq", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(10.0f), new ValFloat(0.01f));
     public EditValue ior = new EditValue("IOR", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(2.0f), new ValFloat(0.1f));
+
+    public EditValue emission = new EditValue("Emission", ValEnum.FromEnum<EmissionMode>(0));
 
 
     public void Destroy()
@@ -297,8 +305,20 @@ public class SceneActor
         }
         else if (ty == (int)Type.Emitter)
         {
+            Shader sDraw = null;
+            switch((EmissionMode)this.emission.IntVal)
+            { 
+                case EmissionMode.Additive:
+                    sDraw = scene.drawShaderAdd;
+                    break;
+
+                case EmissionMode.Reflective:
+                    sDraw = scene.drawShader;
+                    break;
+            }
+
             this.gameObject.layer = scene.inputLayer;
-            this.meshRenderer.sharedMaterial = new Material(scene.drawShader);
+            this.meshRenderer.sharedMaterial = new Material(sDraw);
         }
 
         this.meshCollider.sharedMesh = this.mesh;
@@ -388,6 +408,7 @@ public class SceneActor
         yield return this.angle1;
         yield return this.angle2;
         yield return this.radiation;
+        yield return this.emission;
     }
 
     public IEnumerable<EditValue> EnumerateRelevantParams()
@@ -414,8 +435,13 @@ public class SceneActor
         if(this.squared.val.GetBool() == false)
             yield return this.radius2;
 
-        yield return this.angle1;
-        yield return this.angle2;
+        if(
+            this.shape.IntVal == (int)Shape.Ellipse || 
+            this.fillMode.IntVal == (int)Fill.Hollow)
+        {
+            yield return this.angle1;
+            yield return this.angle2;
+        }
 
         yield return this.fillMode;
 
@@ -440,6 +466,8 @@ public class SceneActor
                     yield return this.power;
                     yield return this.frequency;
                 }
+
+                yield return this.emission;
                 break;
 
             case Type.Barrier:

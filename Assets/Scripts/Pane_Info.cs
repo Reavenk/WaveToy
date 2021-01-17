@@ -27,8 +27,8 @@ public class Pane_Info : Pane_Base
 
     public override void OnLoaded()
     {
-        host.LayoutInRT();
         this.message.text.text = this.mgr.documentComment;
+        host.LayoutInRT();
 
     }
 }
