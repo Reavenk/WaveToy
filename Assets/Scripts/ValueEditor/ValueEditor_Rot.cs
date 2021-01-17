@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using PxPre.Datum;
+
 public class ValueEditor_Rot : ValueEditor_Base
 {
     public UnityEngine.UI.InputField input;
@@ -20,14 +22,15 @@ public class ValueEditor_Rot : ValueEditor_Base
         this.btnCW.onClick.AddListener(this.OnButtonCW);
 
         this.slider.onValueChanged.AddListener((x)=>{ this.OnSlider(); });
-        this.input.onValueChanged.AddListener((x)=>{this.OnTextChange(); });
+        this.input.onEndEdit.AddListener((x)=>{this.OnTextChange(); });
 
 
         ValueEditor_Spinner.SetupWidgetDrag(
             this.Mgr, 
             this.actor, 
             this.btnSpinner, 
-            this.EV);
+            this.EV,
+            this);
 
         this.OnUpdateValue();
     }
@@ -88,18 +91,17 @@ public class ValueEditor_Rot : ValueEditor_Base
         if(this.recurseGuard > 0)
             return;
 
+        Val vb = null;
+
         if (float.TryParse(this.input.text, out float f) == true)
+            vb = new ValFloat(f);
+
+        if (vb != null)
         {
-            if (this.EV.min != null && this.EV.max != null)
-                this.EV.val.SetFloat(Mathf.Clamp(f, this.EV.min.GetFloat(), this.EV.max.GetFloat()));
-            else if (this.EV.min != null)
-                this.EV.val.SetFloat(Mathf.Min(f, this.EV.min.GetFloat()));
-            else if (this.EV.max != null)
-                this.EV.val.SetFloat(Mathf.Max(f, this.EV.max.GetFloat()));
-            else
-                this.EV.val.SetFloat(f);
+            this.EV.val.SetValue(this.EV.Clamp(vb));
+            this.Mgr.NotifyActorModified(this.actor, this.EV.name);
         }
-       
+
         this.OnUpdateValue();
     }
 }

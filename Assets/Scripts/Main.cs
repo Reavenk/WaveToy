@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using PxPre.Datum;
+
 public class Main : 
     MonoBehaviour, 
     PxPre.UIDock.IDockListener
@@ -92,6 +94,18 @@ public class Main :
 
     internal string documentComment = "";
 
+    internal EditValue evDecay = 
+        new EditValue(
+            "Decay", 
+            new ValFloat(Mathf.InverseLerp(MinDecay, MaxDecay, TargetRealDecay)), 
+            new ValFloat(0.0f), 
+            new ValFloat(1.0f), 
+            new ValFloat(0.001f));
+
+    const float MinDecay = 0.98f;
+    const float MaxDecay = 1.0f;
+    const float TargetRealDecay = 0.9999f;
+
     private void Awake()
     {
         this.waveSim = new WaveSimulation();
@@ -148,6 +162,7 @@ public class Main :
         this.dockSys.ResizeAddressWithProportions(new int[]{0}, new float[] { 3.0f, 1.0f });
 
         this.SetZoom(0.0f, true);
+        this.RefreshDecay();
     }
 
     void Update()
@@ -192,7 +207,17 @@ public class Main :
 
     public void LoadDemoFile(DemoFile df)
     {
-        // TODO:
+        TextAsset asset = df.asset;
+        if(asset == null)
+            asset = Resources.Load<TextAsset>(df.resourceName);
+
+        if(asset == null)
+            return;
+
+        System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+        doc.LoadXml(asset.text);
+        
+        this.LoadXML(doc);
     }
 
     public void LoadXML(System.Xml.XmlDocument doc)
@@ -293,7 +318,7 @@ public class Main :
     {
         PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
         stk.AddAction("Clear Signal", ()=>{ this.OnMenu_ClearSignal(); });
-        stk.AddAction("Clear Scene", ()=>{ });
+        stk.AddAction("Clear Scene", ()=>{ this.OnMenu_ClearScene(); });
         stk.PushMenu("Scenarios");
 
         foreach(DemoFile df in this.demoScenarios)
@@ -340,7 +365,7 @@ public class Main :
 
     void OnMenu_SetRedGreen()
     {
-        SetViewMaterial(this.activeViewMat);
+        SetViewMaterial(this.viewMatRedGreen);
     }
 
     void OnMenu_SetGreyscale()
@@ -391,6 +416,7 @@ public class Main :
 
     void OnMenu_ClearScene()
     { 
+        this.Clear();
     }
 
     public void DefferedAddDrag_OnBeginDrag(UnityEngine.EventSystems.PointerEventData eventData)
@@ -520,10 +546,22 @@ public class Main :
 
     public void NotifyActorModified(SceneActor actor, string name)
     { 
+        if(actor == null)
+        {
+            if(name == "Decay")
+                this.RefreshDecay();
+        }
+
         foreach(Pane_Base pb in this.Panes())
             pb.OnActorModified(actor, name);
 
-        this.dirtyActors.Add(actor);
+        if(actor != null)
+            this.dirtyActors.Add(actor);
+    }
+
+    public void RefreshDecay()
+    { 
+        this.waveScene.simMaterial.SetFloat("_Decay", Mathf.Lerp( MinDecay, MaxDecay, this.evDecay.FloatVal));
     }
 
     protected void NotifyActorSelected(SceneActor actor)

@@ -1,4 +1,4 @@
-﻿Shader "Unlit/Draw"
+﻿Shader "Unlit/DrawAdd"
 {
     Properties
     {
@@ -6,7 +6,11 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		
+		ZWrite Off
+		Blend SrcAlpha One
+		
         LOD 100
 
         Pass
@@ -29,7 +33,7 @@
                 float4 vertex : SV_POSITION;
             };
 
-            float4 _Color; 
+            float4 _Color;
 
             v2f vert (appdata v)
             {

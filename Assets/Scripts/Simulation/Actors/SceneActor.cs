@@ -141,19 +141,77 @@ public class SceneActor
 
         if (this.shape.val.GetInt() == (int)Shape.Square)
         {
-            Vector3 [] rv = 
-                new Vector3[]
+            float thk = this.thickness.FloatVal;
+            if(this.fillMode.IntVal == (int)Fill.Filled || thk >= r1 || thk >= r2)
+            {
+                Vector3 [] rv = 
+                    new Vector3[]
+                    { 
+                        new Vector3(-r1, r2, 0.0f),
+                        new Vector3(-r1,-r2, 0.0f),
+                        new Vector3( r1,-r2, 0.0f),
+                        new Vector3( r1, r2, 0.0f)
+                    };
+
+                int [] ri = new int [] { 2, 1, 0, 3, 2, 0};
+
+                this.mesh.SetVertices(rv);
+                this.mesh.SetIndices( ri, MeshTopology.Triangles, 0);
+            }
+            else if(r1 > 0.0f && r2 > 0.0f)
+            { 
+                float cornerAng = Mathf.Atan(r1/r2) / Mathf.PI * 180.0f;
+
+                thk = Mathf.Min(thk, r1/ r2);
+
+                float r1i = r1 - thk;
+                float r2i = r2 - thk;
+
+                float a1v = -this.angle1.FloatVal;
+                float b1v = this.angle2.FloatVal;
+
+                List<Vector3> lstv = new List<Vector3>();
+                List<int> lsti = new List<int>();
+
+                Vector3 av1o = new Vector3(r1, 0.0f);
+                Vector3 av2o = new Vector3(r1, -r2);
+                Vector3 av1i = new Vector3(r1i, 0.0f);
+                Vector3 av2i = new Vector3(r1i, -r2i);
+                if(PerformRayQuad(av1o, av2o, av1i, av2i, Mathf.InverseLerp(0.0f, cornerAng, a1v), true, lstv, lsti) == true)
                 { 
-                    new Vector3(-r1, r2, 0.0f),
-                    new Vector3(-r1,-r2, 0.0f),
-                    new Vector3( r1,-r2, 0.0f),
-                    new Vector3( r1, r2, 0.0f)
-                };
+                    Vector3 av3o = new Vector3(-r1, -r2);
+                    Vector3 av3i = new Vector3(-r1i, -r2i);
 
-            int [] ri = new int [] { 2, 1, 0, 3, 2, 0};
+                    if(PerformRayQuad(av2o, av3o, av2i, av3i, Mathf.InverseLerp(cornerAng, 180.0f - cornerAng, a1v), true, lstv, lsti) == true)
+                    {
+                        Vector3 av4o = new Vector3(-r1, 0.0f);
+                        Vector3 av4i = new Vector3(-r1i, 0.0f);
 
-            this.mesh.SetVertices(rv);
-            this.mesh.SetIndices( ri, MeshTopology.Triangles, 0);
+                        PerformRayQuad(av3o, av4o, av3i, av4i, Mathf.InverseLerp(180.0f - cornerAng, 180.0f, a1v), true, lstv, lsti);
+                    }
+                }
+
+                Vector3 bv1o = new Vector3(r1, 0.0f);
+                Vector3 bv2o = new Vector3(r1, r2);
+                Vector3 bv1i = new Vector3(r1i, 0.0f);
+                Vector3 bv2i = new Vector3(r1i, r2i);
+                if (PerformRayQuad(bv1o, bv2o, bv1i, bv2i, Mathf.InverseLerp(0.0f, cornerAng, b1v), false, lstv, lsti) == true)
+                { 
+                    Vector3 bv3o = new Vector3(-r1, r2);
+                    Vector3 bv3i = new Vector3(-r1i, r2i);
+
+                    if (PerformRayQuad(bv2o, bv3o, bv2i, bv3i, Mathf.InverseLerp(cornerAng, 180.0f - cornerAng, b1v), false, lstv, lsti) == true)
+                    { 
+                        Vector3 bv4o = new Vector3(-r1, 0.0f);
+                        Vector3 bv4i = new Vector3(-r1i, 0.0f);
+
+                        PerformRayQuad(bv3o, bv4o, bv3i, bv4i, Mathf.InverseLerp(180.0f - cornerAng, 180.0f, b1v), false, lstv, lsti);
+                    }
+                }
+
+                this.mesh.SetVertices(lstv.ToArray());
+                this.mesh.SetIndices(lsti.ToArray(), MeshTopology.Triangles, 0);
+            }
         }
         else if (this.shape.val.GetInt() == (int)Shape.Ellipse)
         {
@@ -244,6 +302,59 @@ public class SceneActor
         }
 
         this.meshCollider.sharedMesh = this.mesh;
+    }
+
+    static bool PerformRayQuad(
+        Vector2 outerStart, 
+        Vector2 outerEnd, 
+        Vector2 innerStart, 
+        Vector2 innerEnd,
+        float lambda,
+        bool invWinding,
+        List<Vector3> lstv,
+        List<int> lsti)
+    { 
+        if(lambda <= 0.0f)
+            return false;
+
+        int idx = lstv.Count;
+        if(lambda == 1.0f)
+        { 
+            lstv.Add(outerStart);
+            lstv.Add(outerEnd);
+            lstv.Add(innerStart);
+            lstv.Add(innerEnd);
+        }
+        else
+        {
+            lstv.Add(outerStart);
+            lstv.Add(Vector3.Lerp(outerStart, outerEnd, lambda));
+            lstv.Add(innerStart);
+            lstv.Add(Vector3.Lerp(innerStart, innerEnd, lambda));
+        }
+
+        if (invWinding == false)
+        {
+            lsti.Add(idx + 2);
+            lsti.Add(idx + 1);
+            lsti.Add(idx + 0);
+            //
+            lsti.Add(idx + 2);
+            lsti.Add(idx + 3);
+            lsti.Add(idx + 1);
+        }
+        else
+        {
+            lsti.Add(idx + 0);
+            lsti.Add(idx + 1);
+            lsti.Add(idx + 2);
+            //
+            lsti.Add(idx + 1);
+            lsti.Add(idx + 3);
+            lsti.Add(idx + 2);
+        }
+
+        return true;
     }
 
     public EditValue ? GetParam(string name)

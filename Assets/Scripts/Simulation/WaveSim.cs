@@ -46,6 +46,9 @@ public class WaveSimulation
             GL.Clear(false, true, Color.black);
         }
 
+        RenderTexture.active = this.InputTarget;
+        GL.Clear(false, true, Color.black);
+
         RenderTexture.active = rtActive;
     }
 

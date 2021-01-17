@@ -14,6 +14,9 @@
         _ColorMask("Color Mask", Float) = 15
         _Obs("Obstacles", 2D) = "black"{}
 
+        _ShowInput("ShowInput", Float) = 0
+        _Input("Input", 2D) = "black"{}
+
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip("Use Alpha Clip", Float) = 0
     }
 
@@ -83,6 +86,9 @@
                 float4 _ClipRect;
                 float4 _MainTex_ST;
 
+                float _ShowInput;
+                sampler2D _Input;
+
                 v2f vert(appdata_t v)
                 {
                     v2f OUT;
@@ -105,7 +111,12 @@
                     half4 r = float4(0.0, 0.0, 0.0, 1.0);
                     r.xyz = (color.r + 1.0f) * 0.5f;
 
-                    return lerp(r, obj, obj.w);
+                    half4 ret =  lerp(r, obj, obj.w);
+
+                    if (_ShowInput != 0.0f)
+                        ret += tex2D(_Input, IN.texcoord);
+
+                    return ret;
                 }
             ENDCG
             }

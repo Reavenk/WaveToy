@@ -22,7 +22,7 @@ public class ValueEditor_Spinner : ValueEditor_Base
                 this.OnTextChange();
             });
 
-        SetupWidgetDrag(this.Mgr, this.actor, this.btnSpinner, this.EV);
+        SetupWidgetDrag(this.Mgr, this.actor, this.btnSpinner, this.EV, this);
 
         this.OnUpdateValue();
     }
@@ -54,7 +54,7 @@ public class ValueEditor_Spinner : ValueEditor_Base
         this.OnUpdateValue();
     }
 
-    public static void SetupWidgetDrag(Main mgr, SceneActor actor, UnityEngine.UI.Button btn, EditValue ev)
+    public static void SetupWidgetDrag(Main mgr, SceneActor actor, UnityEngine.UI.Button btn, EditValue ev, ValueEditor_Base ve)
     { 
         UnityEngine.EventSystems.EventTrigger et = 
             btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
@@ -67,6 +67,11 @@ public class ValueEditor_Spinner : ValueEditor_Base
             (x)=>
             {
                 UnityEngine.EventSystems.PointerEventData ped = x as UnityEngine.EventSystems.PointerEventData;
+
+                if(ve.escapeCheck != null)
+                    ve.StopCoroutine(ve.escapeCheck);
+
+                ve.escapeCheck = ve.StartCoroutine(EndDragOnEscape(ped, mgr, actor, ve));
 
                 startingDragValue = ev.val.Clone();
                 startDrag = ped.position;
@@ -84,6 +89,11 @@ public class ValueEditor_Spinner : ValueEditor_Base
                 ev.val.SetValue(vb);
 
                 mgr.NotifyActorModified(actor, ev.name);
+                if(ve != null && ve.escapeCheck != null)
+                { 
+                    ve.StopCoroutine(ve.escapeCheck);
+                    ve.escapeCheck = null;
+                }
             });
 
         UnityEngine.EventSystems.EventTrigger.Entry aDrag = new UnityEngine.EventSystems.EventTrigger.Entry();
@@ -103,7 +113,25 @@ public class ValueEditor_Spinner : ValueEditor_Base
         et.triggers.Add(aBeginDrag);
         et.triggers.Add(aEndDrag);
         et.triggers.Add(aDrag);
+    }
 
+    public static IEnumerator EndDragOnEscape(UnityEngine.EventSystems.PointerEventData draggedPtr, Main mgr, SceneActor actor, ValueEditor_Base ve)
+    {
+        while(true)
+        { 
+            if(Input.GetKeyDown( KeyCode.Escape) == true)
+            { 
+                draggedPtr.pointerDrag = null;
+                draggedPtr.dragging = false;
 
+                ve.EV.val.SetValue(startingDragValue);
+                mgr.NotifyActorModified(actor, ve.EV);
+
+                ve.escapeCheck = null;
+                yield break;
+            }
+
+            yield return null;
+        }
     }
 }

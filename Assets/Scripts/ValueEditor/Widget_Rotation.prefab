@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 4511377038109535537}
   - component: {fileID: 4511377038109535538}
   - component: {fileID: 4511377038109535539}
+  - component: {fileID: 3874857019350218307}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -197,6 +198,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3874857019350218307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4511377038109535549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddb90b218d695814790fbb03b347f4c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tip: Drag to change rotation.
 --- !u!1 &4511377038720945648
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,6 +333,7 @@ GameObject:
   - component: {fileID: 4511377038881436270}
   - component: {fileID: 4511377038881436271}
   - component: {fileID: 4511377038881436264}
+  - component: {fileID: 3509168126706123611}
   m_Layer: 5
   m_Name: Rotate_CW
   m_TagString: Untagged
@@ -426,6 +441,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3509168126706123611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4511377038881436266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddb90b218d695814790fbb03b347f4c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tip: Change rotation 15 degrees clockwise.
 --- !u!1 &4511377039250770471
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,6 +724,7 @@ GameObject:
   - component: {fileID: 4511377039831216247}
   - component: {fileID: 4511377039831216240}
   - component: {fileID: 4511377039831216241}
+  - component: {fileID: 5476057064394673339}
   m_Layer: 5
   m_Name: Rotate_LCCW
   m_TagString: Untagged
@@ -803,6 +832,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5476057064394673339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4511377039831216243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddb90b218d695814790fbb03b347f4c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tip: Change rotation 15 degrees counter clockwise.
 --- !u!1 &4511377039850228327
 GameObject:
   m_ObjectHideFlags: 0
@@ -813,6 +855,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4511377039850228326}
   - component: {fileID: 4511377039850228325}
+  - component: {fileID: 4468658331409829723}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -892,6 +935,19 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4468658331409829723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4511377039850228327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddb90b218d695814790fbb03b347f4c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tip: Adjust to change rotation.
 --- !u!1 &4511377039901484484
 GameObject:
   m_ObjectHideFlags: 0

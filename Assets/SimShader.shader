@@ -8,6 +8,8 @@
         _Obs("Obstacles", 2D) = "black"{}
 
         _InvDim("Sim Incr", Vector) = (0,0,0,0)
+
+        _Decay("Decay", Range(0,1)) = 0.9999
     }
     SubShader
     {
@@ -43,6 +45,7 @@
             float4 _T1_ST;
             float4 _T2_ST;
             float2 _InvDim;
+            float _Decay;
 
             v2f vert (appdata v)
             {
@@ -95,7 +98,7 @@
 
 
                 //float4 v = ((pxl + pxr + pxt + pxb) / 2.0 - pxV) * 0.9999999701f;
-                float4 v = (pxC / 2.0 - pxTm1) * 0.9999f;
+                float4 v = (pxC / 2.0 - pxTm1) * _Decay;
                 v = lerp(v, ip, ip.w);
                 //float4 v = float4(i.uv, 0, 1);// (pxl + pxr + pxt + pxb);
 

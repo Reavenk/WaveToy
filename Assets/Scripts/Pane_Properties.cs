@@ -36,12 +36,14 @@ public class Pane_Properties :
     public int treesSyncRecursionGuard = 0;
 
     PxPre.Tree.Node nodeWorld;
+    PxPre.Tree.Node nodeDecay;
     PxPre.Tree.Node nodeShapes;
 
     public GameObject prefabWCheckbox;
     public GameObject prefabWPulldown;
     public GameObject prefabWSpinner;
     public GameObject prefabWRotation;
+    public GameObject prefabSpinnerReset;
 
     public Sprite tyicoEllipseFilled;
     public Sprite tyicoEllipseHollow;
@@ -54,6 +56,11 @@ public class Pane_Properties :
     Dictionary<SceneActor, PxPre.Tree.Node> actorToNode = new Dictionary<SceneActor, PxPre.Tree.Node>();
     Dictionary<PxPre.Tree.Node, SceneActor> nodeToActor = new Dictionary<PxPre.Tree.Node, SceneActor>();
     Dictionary<SceneActor, NodeWidgets> actorToParams = new Dictionary<SceneActor, NodeWidgets>();
+
+    Dictionary<PxPre.Tree.Node, ValueEditor_Base> environmentItems = 
+        new Dictionary<PxPre.Tree.Node, ValueEditor_Base>();
+
+    ValueEditor_Base decayEd;
 
     public UnityEngine.UI.Toggle showAllToggle;
 
@@ -94,9 +101,15 @@ public class Pane_Properties :
         this.tree.subscribers.Add(this);
 
         this.nodeWorld = this.tree.AddNode("Environment", null);
-        this.tree.AddNode("Decay", this.nodeWorld);
-
+        this.nodeDecay = this.tree.AddNode("Decay", this.nodeWorld);
         this.nodeShapes = this.tree.AddNode("Shapes", null);
+
+        GameObject goDecay = GameObject.Instantiate(this.prefabSpinnerReset);
+        goDecay.transform.SetParent(this.optionScroll.content);
+        this.decayEd = goDecay.GetComponent<ValueEditor_Base>();
+        this.decayEd.Init(this.mgr, null, this.mgr.evDecay);
+        this.decayEd.OnUpdateValue();
+        this.environmentItems.Add(this.nodeDecay, this.decayEd);
     }
 
     public IEnumerator _SetVertScroll(UnityEngine.UI.ScrollRect sr, float normPos)
@@ -110,14 +123,20 @@ public class Pane_Properties :
 
     public override void OnActorAdded(SceneActor actor)
     { 
+        if(this.showAllToggle.isOn == false)
+            return;
+
+        CreateActorTreeNode(actor);
+    }
+
+    public void CreateActorTreeNode(SceneActor actor)
+    {
         PxPre.Tree.Node actorNode = this.tree.AddNode("Actor", this.nodeShapes);
         RefreshActorNodeIcons(actor, actorNode);
         this.nodeToActor.Add(actorNode, actor);
         this.actorToNode.Add(actor, actorNode);
         this.actorToParams.Add(actor, new NodeWidgets());
-
         this.RefreshActorParams(actor);
-
     }
 
     public void RebuildActorTree()
@@ -158,8 +177,8 @@ public class Pane_Properties :
                 this.RefreshActorParams(actor);
         }
         else if(this.mgr.Selected != null)
-        { 
-            this.OnActorAdded(this.mgr.Selected);
+        {
+            CreateActorTreeNode(this.mgr.Selected);
         }
     }
 
@@ -279,7 +298,7 @@ public class Pane_Properties :
         if(this.actorToParams.TryGetValue(actor, out nw) == false)
             return;
 
-        if(node.Expanded == false)
+        if(node.IsVisible() == false || node.Expanded == false)
         { 
             foreach(KeyValuePair<string, NodeWidgets.ParamNodePair> kvp in nw.widgets)
                 kvp.Value.param.gameObject.SetActive(false);
@@ -324,6 +343,14 @@ public class Pane_Properties :
 
     public override void OnActorModified(SceneActor actor, string paramName)
     {
+        if(actor == null)
+        { 
+            if(paramName == "Decay")
+                this.decayEd.OnUpdateValue();
+
+            return;
+        }
+
         NodeWidgets nw;
         if(this.actorToParams.TryGetValue(actor, out nw) == false)
             return;
@@ -438,5 +465,27 @@ public class Pane_Properties :
 
         foreach(KeyValuePair<SceneActor, PxPre.Tree.Node> kvp in this.actorToNode)
             this.RefreshParamPositions(kvp.Key);
+
+        if(this.nodeWorld.Expanded == false)
+        {
+            foreach(KeyValuePair< PxPre.Tree.Node, ValueEditor_Base> kvp in this.environmentItems)
+                kvp.Value.gameObject.SetActive(false);
+        }
+        else
+        {
+            foreach (KeyValuePair<PxPre.Tree.Node, ValueEditor_Base> kvp in this.environmentItems)
+            {
+                kvp.Value.gameObject.SetActive(true);
+                RectTransform rtParam = kvp.Value.rectTransform;
+
+                RectTransform rt = this.tree.GetNodeRectTransform(kvp.Key);
+
+                const float horizPadd = 5.0f;
+                rtParam.anchorMin = new Vector2(0.0f, 1.0f);
+                rtParam.anchorMax = new Vector2(1.0f, 1.0f);
+                rtParam.offsetMin = new Vector2(horizPadd, Mathf.Min(rt.offsetMin.y, rt.offsetMax.y - kvp.Key.MinHeight));
+                rtParam.offsetMax = new Vector2(-horizPadd, rt.offsetMax.y);
+            }
+        }
     }
 }

@@ -14,6 +14,8 @@ public class ValueEditor_Base : MonoBehaviour
     EditValue ev;
     public EditValue EV { get=>this.ev; }
 
+    public Coroutine escapeCheck = null;
+
     protected SceneActor actor;
 
     public void Awake()
