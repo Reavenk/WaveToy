@@ -115,7 +115,7 @@
                     else
                         r.y = -x;
 
-                    half4 ret = lerp(r, obj, obj.w);
+                    half4 ret = lerp(r, obj, 1.0 - obj.w);
 
                     if (_ShowInput != 0.0f)
                         ret += tex2D(_Input, IN.texcoord);

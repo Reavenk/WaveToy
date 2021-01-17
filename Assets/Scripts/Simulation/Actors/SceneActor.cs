@@ -70,7 +70,7 @@ public class SceneActor
     public EditValue phase = new EditValue("Phase", new ValFloat(0.0f), new ValFloat(0.0f), new ValFloat(1.0f), new ValFloat(0.01f));
     public EditValue power = new EditValue("Power", new ValFloat(1.0f), new ValFloat(-2.0f), new ValFloat(2.0f), new ValFloat(0.01f));
     public EditValue frequency = new EditValue("Freq", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(10.0f), new ValFloat(0.01f));
-    public EditValue ior = new EditValue("IOR", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(2.0f), new ValFloat(0.1f));
+    public EditValue ior = new EditValue("IOR", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(2.0f), new ValFloat(0.01f));
 
     public EditValue emission = new EditValue("Emission", ValEnum.FromEnum<EmissionMode>(0));
 
@@ -302,6 +302,14 @@ public class SceneActor
         {
             this.gameObject.layer = scene.obstacleLayer;
             this.meshRenderer.sharedMaterial = scene.matObstacle;
+        }
+        else if(ty == (int)Type.Impedance)
+        {
+            this.gameObject.layer = scene.obstacleLayer;
+            Material mat = new Material(scene.drawShader);
+            float invIOR = 1.0f - this.ior.FloatVal;
+            mat.color = new Color(invIOR, invIOR, invIOR, invIOR);
+            this.meshRenderer.sharedMaterial = mat;
         }
         else if (ty == (int)Type.Emitter)
         {

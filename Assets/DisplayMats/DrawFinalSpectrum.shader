@@ -114,7 +114,7 @@
                     half4 r = float4(0.0, 0.0, 0.0, 1.0);
                     r.xyz = tex2D(_Spectrum, half2((color.r + 1.0f) * 0.5f, 0.0));
 
-                    half4 ret = lerp(r, obj, obj.w);
+                    half4 ret = lerp(r, obj, 1.0 - obj.w);
 
                     if (_ShowInput != 0.0f)
                         ret += tex2D(_Input, IN.texcoord);

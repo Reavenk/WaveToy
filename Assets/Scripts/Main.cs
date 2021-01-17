@@ -161,14 +161,15 @@ public class Main :
 
     void Update()
     {
+        // We allow them to change actor properties and preview them while paused.
+        foreach (SceneActor sa in this.dirtyActors)
+            sa.UpdateGeometry(this.waveScene);
+
         if(this.playing == true)
             this.Integrate();
         else
             this.waveScene.UpdateBuffersWithoutIntegration();
 
-        // We allow them to change actor properties and preview them while paused.
-        foreach (SceneActor sa in this.dirtyActors)
-            sa.UpdateGeometry(this.waveScene);
 
         this.dirtyActors.Clear();
 

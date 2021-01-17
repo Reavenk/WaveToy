@@ -21,8 +21,6 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -38,14 +36,15 @@
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _T1;
-            sampler2D _T2;
-            sampler2D _Obs;
-            sampler2D _Input;
-            float4 _T1_ST;
-            float4 _T2_ST;
-            float2 _InvDim;
-            float _Decay;
+            sampler2D _T1;      // Texture for last frame
+            sampler2D _T2;      // Texture for frame before the previous frame.
+            sampler2D _Obs;     // Rendered obstacles [0,1]
+            sampler2D _Input;   // Rendered input 
+            
+            float4 _T1_ST;      // The UV mapping for _T1 is going to be used for everything
+
+            float2 _InvDim;     // Inverse dimensions, to turn UV space into per-pixel sampled space
+            float _Decay;       // The amount of signal decay per frame.
 
             v2f vert (appdata v)
             {
@@ -59,52 +58,60 @@
             {
                 float4 pxTm1 = tex2D(_T2, i.uv);
 
+                // Sample the obstacles. A value of 1.0 means unobstructed. A value of 
+                // 0.0 means completly obstructed.
                 float4 obj = tex2D(_Obs, i.uv);
-                if (obj.a != 0.0)
+                if (obj.a <= 0.0)
                 {
                     float4 pxT = 0;// tex2D(_T2, i.uv);
                     return pxT;
                 }
 
+                // Not the actual IOR, just a coeff modelling its behaviour.
+                // The larger the number (up to 1.0), the more freely the wave
+                // can move.
+                // When it gets closer to 0, we lower the kernel to simulate slower
+                // movement. When we get to 0, that's a special value that represents 
+                // an obstable (already handled in the if statement above).
+                float invior = obj.a;
+                float2 kern = _InvDim.x * invior;
+
                 // KERNEL 1
                 //////////////////////////////////////////////////
-                float4 pxl = tex2D(_T1, i.uv + float2(-_InvDim.x, 0.0));
+                float4 pxl = tex2D(_T1, i.uv + float2(-kern.x, 0.0));
 
                 if (i.uv.x - _InvDim.x <= _InvDim.x * 0.5)
                     pxl = pxTm1;
 
                 // KERNEL 2
                 //////////////////////////////////////////////////
-                float4 pxr = tex2D(_T1, i.uv + float2(_InvDim.x, 0.0));
+                float4 pxr = tex2D(_T1, i.uv + float2(kern.x, 0.0));
                 if (i.uv.x + _InvDim.x >= 1.0 - _InvDim.x * 0.5)
                     pxr = pxTm1;
 
                 // KERNEL 3
                 //////////////////////////////////////////////////
-                float4 pxt = tex2D(_T1, i.uv + float2(0.0, _InvDim.y));
+                float4 pxt = tex2D(_T1, i.uv + float2(0.0, kern.y));
                 if (i.uv.y + _InvDim.y >= 1.0 - _InvDim.y * 0.5)
                     pxt = pxTm1;
 
                 // KERNEL 4
                 //////////////////////////////////////////////////
-                float4 pxb = tex2D(_T1, i.uv + float2(0.0, -_InvDim.y));
+                float4 pxb = tex2D(_T1, i.uv + float2(0.0, -kern.y));
                 if (i.uv.y - _InvDim.y <= _InvDim.y * 0.5)
                     pxb = pxTm1;
 
+                //
                 //////////////////////////////////////////////////
                 float4 pxC = (pxl + pxr + pxt + pxb);
                 float4 ip = tex2D(_Input, i.uv);
                 pxC = lerp(pxC, ip, ip.w);
 
 
-                //float4 v = ((pxl + pxr + pxt + pxb) / 2.0 - pxV) * 0.9999999701f;
+                // Apply the decay factor
+                //////////////////////////////////////////////////
                 float4 v = (pxC / 2.0 - pxTm1) * _Decay;
                 v = lerp(v, ip, ip.w);
-                //float4 v = float4(i.uv, 0, 1);// (pxl + pxr + pxt + pxb);
-
-                //v = abs(v);
-                //v = pxV;
-                //v.w = abs(v.w);
                 return v;
             }
             ENDCG
