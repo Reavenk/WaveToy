@@ -119,8 +119,7 @@ public class Main :
 
     void Start()
     {
-        this.activeViewMat = this.viewMatRedGreen;
-        this.img.material.SetTexture("_Obs", this.waveSim.SimObstacles);
+        this.SetViewMaterial(this.viewMatRedGreen);
 
         this.simWindow = 
             this.dockSys.WrapIntoWindow(
@@ -168,16 +167,13 @@ public class Main :
     void Update()
     {
         if(this.playing == true)
-        {
             this.Integrate();
-
-            foreach(SceneActor sa in this.dirtyActors)
-                sa.UpdateGeometry(this.waveScene);
-        }
         else
-        {
             this.waveScene.UpdateBuffersWithoutIntegration();
-        }
+
+        // We allow them to change actor properties and preview them while paused.
+        foreach (SceneActor sa in this.dirtyActors)
+            sa.UpdateGeometry(this.waveScene);
 
         this.dirtyActors.Clear();
 
@@ -308,6 +304,14 @@ public class Main :
             this.playing ? 
                 this.pauseIcon :
                 this.playIcon;
+
+        this.SetViewMaterial(this.activeViewMat);
+
+        // There's something weird going on with the RawTexture where it doesn't initially
+        // update the input material the first pause until it's given a poke.
+        this.img.gameObject.SetActive(false);
+        this.img.gameObject.SetActive(true);
+        //this.activeViewMat.SetFloat("_ShowInput", this.playing ? 0.0f : 1.0f);
     }
 
     public void OnButton_Add()
@@ -382,6 +386,8 @@ public class Main :
     {
         this.activeViewMat = mat;
         this.activeViewMat.SetTexture("_Obs", this.waveSim.SimObstacles);
+        this.activeViewMat.SetTexture("_Input", this.waveSim.InputTarget);
+        this.activeViewMat.SetFloat("_ShowInput", this.playing ? 0.0f : 1.0f);
         this.img.material = this.activeViewMat;
     }
 
