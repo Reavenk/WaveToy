@@ -167,6 +167,8 @@ public class WaveScene
 
         // Render a quad to execute the simulation shader.
 
+        // Arguably this code should be in WaveSim.
+        // (wleu 01/18/2021)
         RenderTexture.active = this.waveSim.SignalRenderTarget;
         GL.PushMatrix();
         GL.LoadOrtho();
