@@ -1,9 +1,34 @@
-﻿using System.Collections;
+﻿// MIT License
+// 
+// Copyright (c) 2021 Pixel Precision, LLC
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using PxPre.Datum;
 
+/// <summary>
+/// The main manager for the application.
+/// </summary>
 public class Main : 
     MonoBehaviour, 
     PxPre.UIDock.IDockListener
@@ -12,14 +37,35 @@ public class Main :
     //public Texture2D tex;
     //public Texture2D tex2;
 
+    /// <summary>
+    /// The different modes of dragging an actor in the scene.
+    /// </summary>
     public enum ManipMode
     { 
+        /// <summary>
+        /// Translate the actor.
+        /// </summary>
         Translate,
+
+        /// <summary>
+        /// Rotate the actor.
+        /// </summary>
         Rotate,
+
+        /// <summary>
+        /// Translate and rotate the actor by mimicing a simple ragdoll.
+        /// </summary>
         Drag,
+
+        /// <summary>
+        /// Scale the actor.
+        /// </summary>
         Scale
     }
 
+    /// <summary>
+    /// An included demo document in the Scenarios pulldown.
+    /// </summary>
     [System.Serializable]
     public struct DemoFile
     { 
@@ -29,13 +75,29 @@ public class Main :
         public string resourceName;
     }
 
-    int dim = 1024;
+    /// <summary>
+    /// texture image size.
+    /// </summary>
+    const int dim = 1024;
 
-    public float divAmt = 50.0f;
-
+    /// <summary>
+    /// The UI image to show the simulation.
+    /// </summary>
     public UnityEngine.UI.RawImage img;
+
+    /// <summary>
+    /// The RectTransform to put into a docked window for the viewport.
+    /// </summary>
     public RectTransform simViewport;
+
+    /// <summary>
+    /// The docked window for this.simViewport.
+    /// </summary>
     PxPre.UIDock.Window simWindow;
+
+    /// <summary>
+    /// The ScrollRect holding the simulation image.
+    /// </summary>
     public UnityEngine.UI.ScrollRect simScrollRect;
 
     public Pane_Properties paneProperties;
@@ -50,8 +112,6 @@ public class Main :
     Material activeViewMat = null;
 
     float zoom = 1.0f;
-
-    public float modulateRate = 5.0f;
 
     public PxPre.UIDock.Root dockSys;
 
@@ -80,11 +140,22 @@ public class Main :
     public UnityEngine.UI.Image manipDragIcon;
     public UnityEngine.UI.Image manipScaleIcon;
 
+    /// <summary>
+    /// A set of actors that have had their parameters changed 
+    /// during the last frame.
+    /// </summary>
     HashSet<SceneActor> dirtyActors = new HashSet<SceneActor>();
 
     public bool playing = true;
 
+    /// <summary>
+    /// The selected scene actor.
+    /// </summary>
     SceneActor selection;
+
+    /// <summary>
+    /// Public accessor for the selected scene.
+    /// </summary>
     public SceneActor Selected {get=>this.selection; }
 
     public List<DemoFile> demoScenarios = new List<DemoFile>();
@@ -791,15 +862,15 @@ public class Main :
                                 sat.actor.actorType.IntVal = (int)SceneActor.Type.Impedance;
                                 this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
                             });
-                        stk.AddAction(
-                            sat.actor.actorType.IntVal == (int)SceneActor.Type.Sensor,
-                            null,
-                            "Sensor", 
-                            () => 
-                            {
-                                sat.actor.actorType.IntVal = (int)SceneActor.Type.Sensor;
-                                this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
-                            });
+                        //stk.AddAction(
+                        //    sat.actor.actorType.IntVal == (int)SceneActor.Type.Sensor,
+                        //    null,
+                        //    "Sensor", 
+                        //    () => 
+                        //    {
+                        //        sat.actor.actorType.IntVal = (int)SceneActor.Type.Sensor;
+                        //        this.NotifyActorModified(sat.actor, sat.actor.actorType.name);
+                        //    });
                     stk.PopMenu();
 
                     stk.AddSeparator();

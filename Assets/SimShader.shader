@@ -1,14 +1,52 @@
-﻿Shader "Unlit/SimShader"
+﻿// MIT License
+// 
+// Copyright (c) 2021 Pixel Precision, LLC
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// The main FDTD wave simulation shader.
+Shader "Unlit/SimShader"
 {
     Properties
     {
+        // The most recent texture (t0)
         _T1 ("Texture", 2D) = "white" {}
+
+        // The 2nd most recent texture (t-1)
         _T2("Texture", 2D) = "white" {}
+
+        // The input wave data to inject into the simulation. The component
+        // values can be positive or negative.
         _Input("Input", 2D) = "black" {}
+
+        // The texture defining where the obstacles are.
+        // 1.0 for no obstacle.
+        // 0.0 for impassible obstacle
+        // Any value in between for an impediding material
         _Obs("Obstacles", 2D) = "black"{}
 
+        // The inverse dimensions of the image. Image addresses in the shader are
+        // set by UV when we want pixels. So we need to change the UV to pixel addresses
+        // by dividing the UV by the image dimensions.
         _InvDim("Sim Incr", Vector) = (0,0,0,0)
 
+        // The amount to decay the simulation.
         _Decay("Decay", Range(0,1)) = 0.9999
     }
     SubShader
@@ -67,7 +105,7 @@
                     return pxT;
                 }
 
-                // Not the actual IOR, just a coeff modelling its behaviour.
+                // Not the actual IOR, just a coeff modeling its behaviour.
                 // The larger the number (up to 1.0), the more freely the wave
                 // can move.
                 // When it gets closer to 0, we lower the kernel to simulate slower
@@ -80,6 +118,8 @@
                 //////////////////////////////////////////////////
                 float4 pxl = tex2D(_T1, i.uv + float2(-kern.x, 0.0));
 
+                // If it's near/off the edge, we do some shenanegans to try to avoid reflections
+                // as much as possible.
                 if (i.uv.x - _InvDim.x <= _InvDim.x * 0.5)
                     pxl = pxTm1;
 
@@ -90,7 +130,7 @@
                     pxr = pxTm1;
 
                 // KERNEL 3
-                //////////////////////////////////////////////////
+                ////////////////////////////////////////////////// 
                 float4 pxt = tex2D(_T1, i.uv + float2(0.0, kern.y));
                 if (i.uv.y + _InvDim.y >= 1.0 - _InvDim.y * 0.5)
                     pxt = pxTm1;

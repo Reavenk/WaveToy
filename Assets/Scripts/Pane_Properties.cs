@@ -1,24 +1,63 @@
-﻿using System.Collections;
+﻿// MIT License
+// 
+// Copyright (c) 2021 Pixel Precision, LLC
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using PxPre.Datum;
 
+/// <summary>
+/// The docked properties window that shows the scene tree and editing widgets 
+/// of actors in the scene.
+/// </summary>
 public class Pane_Properties : 
     Pane_Base,
     PxPre.Tree.ITreeHandler
 {
+    /// <summary>
+    /// A registry of a node in the tree and references to the current widgets
+    /// created for it.
+    /// </summary>
     public class NodeWidgets
     {
+        /// <summary>
+        /// A pairing of a tree node for an actor parameter and its instanced widget.
+        /// </summary>
         public struct ParamNodePair
         {
             public PxPre.Tree.Node node;
             public ValueEditor_Base param;
         }
 
+        /// <summary>
+        /// A lookup of parameter widgets given a parameter name.
+        /// </summary>
         public Dictionary<string, ParamNodePair> widgets =
             new Dictionary<string, ParamNodePair>();
 
+        /// <summary>
+        /// Destroy all the widgets referenced in the object.
+        /// </summary>
         public void Destroy()
         {
             foreach (KeyValuePair<string, ParamNodePair> kvp in this.widgets)
@@ -28,40 +67,129 @@ public class Pane_Properties :
         }
     }
 
+    /// <summary>
+    /// The tree control for actors and properties.
+    /// </summary>
     public PxPre.Tree.Tree tree;
 
+    /// <summary>
+    /// The ScrollRect containing the tree.
+    /// </summary>
     public UnityEngine.UI.ScrollRect treeScroll;
+
+    /// <summary>
+    /// The ScrollRect containing the options.
+    /// </summary>
     public UnityEngine.UI.ScrollRect optionScroll;
 
+    /// <summary>
+    /// A semaphore to avoid recursive callbacks that could lead to a stack overflow.
+    /// </summary>
     public int treesSyncRecursionGuard = 0;
 
+    /// <summary>
+    /// The node in the tree for the world properties.
+    /// </summary>
     PxPre.Tree.Node nodeWorld;
-    PxPre.Tree.Node nodeDecay;
-    PxPre.Tree.Node nodeShapes;
 
+    /// <summary>
+    /// The node in the tree for the decay property.
+    /// </summary>
+    PxPre.Tree.Node nodeDecay;
+
+    /// <summary>
+    /// The node in the tree containing the actors.
+    /// </summary>
+    PxPre.Tree.Node nodeShapes;
+    
+    /// <summary>
+    /// The prefab for the bool checkbox.
+    /// </summary>
     public GameObject prefabWCheckbox;
+
+    /// <summary>
+    /// The prefab for the enum pulldown widgets.
+    /// </summary>
     public GameObject prefabWPulldown;
+
+    /// <summary>
+    /// The prefab for the spinner widgets.
+    /// </summary>
     public GameObject prefabWSpinner;
+
+    /// <summary>
+    /// The prefab for rotation widgets.
+    /// </summary>
     public GameObject prefabWRotation;
+
+    /// <summary>
+    /// The prefab for reset-able spinner widgets.
+    /// </summary>
     public GameObject prefabSpinnerReset;
 
+    /// <summary>
+    /// The icon for actors in the tree that are filled fllipses.
+    /// </summary>
     public Sprite tyicoEllipseFilled;
+
+    /// <summary>
+    /// The icon for actors in the tree that are hollow ellipses.
+    /// </summary>
     public Sprite tyicoEllipseHollow;
+
+    /// <summary>
+    /// The icon for actors in the tree that are filled rectangles.
+    /// </summary>
     public Sprite tyicoRectFilled;
+
+    /// <summary>
+    /// The icon for actors in the tree that are hollow rectangles.
+    /// </summary>
     public Sprite tyicoRectHollow;
 
+    /// <summary>
+    /// The icon for actors in the tree that are toggled on.
+    /// </summary>
     public Sprite icotogOn;
+
+    /// <summary>
+    /// The icon for actors in the tree that are toggled off.
+    /// </summary>
     public Sprite icotogOff;
 
+    /// <summary>
+    /// A lookup of tree nodes given an actor. This container should be synced with nodeToActor and
+    /// actorToParams.
+    /// </summary>
     Dictionary<SceneActor, PxPre.Tree.Node> actorToNode = new Dictionary<SceneActor, PxPre.Tree.Node>();
+
+    /// <summary>
+    /// A lookup of actors given a tree node. This container should be synced with actorToNode and 
+    /// actorToParams.
+    /// </summary>
     Dictionary<PxPre.Tree.Node, SceneActor> nodeToActor = new Dictionary<PxPre.Tree.Node, SceneActor>();
+
+    /// <summary>
+    /// A lookup of NodeWidgets given a scene actor. This container should be synced with actorToNode
+    /// and nodeToActor.
+    /// </summary>
     Dictionary<SceneActor, NodeWidgets> actorToParams = new Dictionary<SceneActor, NodeWidgets>();
 
-    Dictionary<PxPre.Tree.Node, ValueEditor_Base> environmentItems = 
-        new Dictionary<PxPre.Tree.Node, ValueEditor_Base>();
+    /// <summary>
+    /// A lookup of non-actor parameter widgets given a tree node.
+    /// </summary>
+    /// <remarks>As of writing this comment, only the Decay parameter is managed.</remarks>
+    Dictionary<PxPre.Tree.Node, ValueEditor_Base> environmentItems = new Dictionary<PxPre.Tree.Node, ValueEditor_Base>();
 
+    /// <summary>
+    /// The editor widget for the environmeny's decay.
+    /// </summary>
     ValueEditor_Base decayEd;
 
+    /// <summary>
+    /// Toggle to select if all nodes should be in the tree, or if only the
+    /// selected node should be displayed.
+    /// </summary>
     public UnityEngine.UI.Toggle showAllToggle;
 
 
@@ -114,6 +242,12 @@ public class Pane_Properties :
         this.tree.LayoutTree();
     }
 
+    /// <summary>
+    /// Utility coroutine function used to sync the two ScrollRects.
+    /// </summary>
+    /// <param name="sr">The ScrollRect that was modified that invoked the sync.</param>
+    /// <param name="normPos">The new normalized position to sync to.</param>
+    /// <returns>Coroutine.</returns>
     public IEnumerator _SetVertScroll(UnityEngine.UI.ScrollRect sr, float normPos)
     {
         yield return new WaitForEndOfFrame();
@@ -131,6 +265,11 @@ public class Pane_Properties :
         CreateActorTreeNode(actor);
     }
 
+    /// <summary>
+    /// Create an tree node for an actor and populate it with the correct
+    /// contents.
+    /// </summary>
+    /// <param name="actor">The actor to add to the tree.</param>
     public void CreateActorTreeNode(SceneActor actor)
     {
         PxPre.Tree.Node actorNode = this.tree.AddNode("Actor", this.nodeShapes);
@@ -141,6 +280,9 @@ public class Pane_Properties :
         this.RefreshActorParams(actor);
     }
 
+    /// <summary>
+    /// Rebuild the entire tree.
+    /// </summary>
     public void RebuildActorTree()
     { 
         this.nodeShapes.DestroyChildren();
@@ -184,6 +326,11 @@ public class Pane_Properties :
         }
     }
 
+    /// <summary>
+    /// Refresh the icons for an actor's tree node.
+    /// </summary>
+    /// <param name="actor">The actor to refresh for.</param>
+    /// <param name="actorNode">The actor's tree node.</param>
     protected void RefreshActorNodeIcons(SceneActor actor, PxPre.Tree.Node actorNode)
     {
         actorNode.SetIcon(
@@ -215,6 +362,11 @@ public class Pane_Properties :
         }
     }
 
+    /// <summary>
+    /// For a specified actor, rebuild its tree of parameters to make sure
+    /// they are up to date.
+    /// </summary>
+    /// <param name="actor">The actor to rebuilt the subtree for.</param>
     void RefreshActorParams(SceneActor actor)
     {
         PxPre.Tree.Node n;
@@ -248,6 +400,8 @@ public class Pane_Properties :
                 GameObject goPrefab = null;
                 if (ev.name == "Rotation")
                 {
+                    // Rotation is an edge case where the parameter gets its 
+                    // own specific widget.
                     goPrefab = GameObject.Instantiate(this.prefabWRotation);
                 }
                 else if(ev.val.ty == Val.Type.Float)
@@ -290,6 +444,10 @@ public class Pane_Properties :
         }
     }
 
+    /// <summary>
+    /// Makes sure the parameters shown for a specific actor is correct.
+    /// </summary>
+    /// <param name="actor">The actor to refresh for.</param>
     void RefreshParamPositions(SceneActor actor)
     { 
         PxPre.Tree.Node node;
@@ -328,6 +486,7 @@ public class Pane_Properties :
         }
     }
 
+    
     public override void OnActorDeleted(SceneActor actor)
     { 
         if(this.actorToNode.TryGetValue(actor, out PxPre.Tree.Node n) == true)

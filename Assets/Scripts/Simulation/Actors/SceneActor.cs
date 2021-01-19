@@ -1,47 +1,147 @@
-﻿using System.Collections;
+﻿// MIT License
+// 
+// Copyright (c) 2021 Pixel Precision, LLC
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using PxPre.Datum;
 
+/// <summary>
+/// The selected scene actor.
+/// </summary>
 public class SceneActor
 {
+    /// <summary>
+    /// The type of object.
+    /// </summary>
     public enum Type
     { 
+        /// <summary>
+        /// The actor is an emitter.
+        /// </summary>
         Emitter,
+
+        /// <summary>
+        /// The actor is a barrier.
+        /// </summary>
         Barrier,
+
+        /// <summary>
+        /// The actor is made of a medium where the phase-vecocity is slower than outside.
+        /// </summary>
         Impedance,
-        Sensor
+
+        /// <summary>
+        /// Reads data from the sim texture and displays in the UI
+        /// </summary>
+        /// <remarks>Currently unimplemented.</remarks>
+        //Sensor
     }
 
+    /// <summary>
+    /// The shape of the actor.
+    /// </summary>
     public enum Shape
     { 
+        /// <summary>
+        /// The actor is an ellipse.
+        /// </summary>
         Ellipse,
+
+        /// <summary>
+        /// The actor is a rectangle.
+        /// </summary>
+        /// <remarks>A misnomer, it should be called Rectangle, but it's too late to change
+        /// now without corrupting saved demo files.</remarks>
         Square
     }
 
+    /// <summary>
+    /// Specifies if the actor is hollow or not.
+    /// </summary>
     public enum Fill
     { 
+        /// <summary>
+        /// The actor is filled in.
+        /// </summary>
         Filled,
+
+        /// <summary>
+        /// The actor is hollow inside.
+        /// </summary>
         Hollow
     }
 
+    /// <summary>
+    /// Specifies how emitters supply input into the simulation.
+    /// </summary>
     public enum RadiationType
     { 
+        /// <summary>
+        /// Sinusoidal alternating values.
+        /// </summary>
         AC,
+
+        /// <summary>
+        /// Constant value.
+        /// </summary>
         DC
     }
 
+    /// <summary>
+    /// Specifies if emitters blend signal data or add signal data.
+    /// </summary>
+    /// <remarks>Currently non-functional.</remarks>
     public enum EmissionMode
     { 
         Reflective,
         Additive
     }
 
+    /// <summary>
+    /// The GameObject for the SceneActor.
+    /// </summary>
     public GameObject gameObject;
+
+    /// <summary>
+    /// The MeshRender for rendering the actor.
+    /// </summary>
     MeshRenderer meshRenderer;
+
+    /// <summary>
+    /// The MeshFilter holding the actor's geometry.
+    /// </summary>
     MeshFilter meshFilter;
+
+    /// <summary>
+    /// The MeshCollider olding the actor's geometry so input actions like clicking and dragging
+    /// on them can be implemented.
+    /// </summary>
     MeshCollider meshCollider;
+
+    /// <summary>
+    /// The Actor's geometry.
+    /// </summary>
     Mesh mesh;
 
 
@@ -70,11 +170,13 @@ public class SceneActor
     public EditValue phase = new EditValue("Phase", new ValFloat(0.0f), new ValFloat(0.0f), new ValFloat(1.0f), new ValFloat(0.01f));
     public EditValue power = new EditValue("Power", new ValFloat(1.0f), new ValFloat(-2.0f), new ValFloat(2.0f), new ValFloat(0.01f));
     public EditValue frequency = new EditValue("Freq", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(10.0f), new ValFloat(0.01f));
-    public EditValue ior = new EditValue("IOR", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(2.0f), new ValFloat(0.01f));
+    public EditValue ior = new EditValue("IOR", new ValFloat(1.0f), new ValFloat(0.1f), new ValFloat(0.99f), new ValFloat(0.01f));
 
     public EditValue emission = new EditValue("Emission", ValEnum.FromEnum<EmissionMode>(0));
 
-
+    /// <summary>
+    /// Destroys the Unity assets of the SceneActor.
+    /// </summary>
     public void Destroy()
     { 
         if(this.gameObject == null)
@@ -88,6 +190,10 @@ public class SceneActor
         this.mesh = null;
     }
 
+    /// <summary>
+    /// Updates the actor to the current state of the simulation.
+    /// </summary>
+    /// <param name="scene">The parent Scene to reference data from.</param>
     public void Tick(WaveScene scene)
     { 
         if(this.actorType.IntVal == (int)Type.Emitter)
@@ -106,6 +212,11 @@ public class SceneActor
         }
     }
 
+    /// <summary>
+    /// Recreates the SceneActor geometry and other visible assets based on the actor's
+    /// current properties.
+    /// </summary>
+    /// <param name="scene">The parent Scene to reference data from.</param>
     public void UpdateGeometry(WaveScene scene)
     { 
 
@@ -332,6 +443,20 @@ public class SceneActor
         this.meshCollider.sharedMesh = this.mesh;
     }
 
+    /// <summary>
+    /// Given two lines (define by two pointers) and an interpolation amount, 
+    /// render a quad. This is used for rendering hollow rectangles that do 
+    /// not circle all the way around because of their angle values.
+    /// </summary>
+    /// <param name="outerStart">The start of the outer line.</param>
+    /// <param name="outerEnd">The end of the outer line.</param>
+    /// <param name="innerStart">The start of the inner line.</param>
+    /// <param name="innerEnd">The end of the inner line.</param>
+    /// <param name="lambda">The amount to extend outwards on the ray.</param>
+    /// <param name="invWinding">If true, the triangle windings are reversed.</param>
+    /// <param name="lstv">Output list of vertices.</param>
+    /// <param name="lsti">Output list of indices.</param>
+    /// <returns></returns>
     static bool PerformRayQuad(
         Vector2 outerStart, 
         Vector2 outerEnd, 
@@ -385,6 +510,11 @@ public class SceneActor
         return true;
     }
 
+    /// <summary>
+    /// Given a specific name, find the matching propery.
+    /// </summary>
+    /// <param name="name">The name of the propery.</param>
+    /// <returns>The propery with the matching name, or null if none was found.</returns>
     public EditValue ? GetParam(string name)
     { 
         foreach(EditValue ev in this.EnumerateAllParams())
@@ -396,6 +526,10 @@ public class SceneActor
         return null;
     }
 
+    /// <summary>
+    /// An IEnumerable of all the possible actor properties.
+    /// </summary>
+    /// <returns>An IEnumerable of all the possible actor properties.</returns>
     public IEnumerable<EditValue> EnumerateAllParams()
     {
         yield return this.enabled;
@@ -419,6 +553,14 @@ public class SceneActor
         yield return this.emission;
     }
 
+    /// <summary>
+    /// Enumerate relevant properties.
+    /// 
+    /// The actor is created with all the properties it may ever need in any situation, 
+    /// but specific properties may not be relevant based off other propery values. This function
+    /// iterates through the actor's properties but skips irrelevant ones.
+    /// </summary>
+    /// <returns>An IEnumerable of properties that affect the actor.</returns>
     public IEnumerable<EditValue> EnumerateRelevantParams()
     { 
         yield return this.enabled;
@@ -462,8 +604,8 @@ public class SceneActor
 
         switch((Type)this.actorType.val.GetInt())
         { 
-            case Type.Sensor:
-                break;
+            //case Type.Sensor:
+            //    break;
 
             case Type.Emitter:
                 yield return this.radiation;
