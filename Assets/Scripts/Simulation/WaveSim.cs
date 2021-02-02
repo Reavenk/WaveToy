@@ -85,6 +85,17 @@ public class WaveSimulation
             };
     }
 
+    public void ReverseCycleSignalBuffers()
+    {
+        this.renderTargs =
+            new RenderTexture[]
+            {
+                this.renderTargs[1],
+                this.renderTargs[0],
+                this.renderTargs[2]
+            };
+    }
+
     /// <summary>
     /// Clear all the buffers of their contents.
     /// </summary>

@@ -369,6 +369,7 @@ public class Main :
     {
         PxPre.DropMenu.StackUtil stk = new PxPre.DropMenu.StackUtil();
         stk.AddAction("Clear Signal", ()=>{ this.OnMenu_ClearSignal(); });
+        stk.AddAction("Reverse Single Frames", () => { this.OnPulldown_FrameSwap(); });
         stk.PushMenu("Scenarios");
 
         foreach(DemoFile df in this.demoScenarios)
@@ -382,6 +383,12 @@ public class Main :
             this.canvas,
             stk.Root,
             this.pulldownSim);
+    }
+
+    public void OnPulldown_FrameSwap()
+    { 
+        this.waveSim.ReverseCycleSignalBuffers();
+        this.img.texture = this.waveSim.SignalRecent;
     }
 
     public void OnPulldown_View()
