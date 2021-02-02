@@ -374,7 +374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -8.500084, y: -28.500078}
+  m_AnchoredPosition: {x: -8.503823, y: -28.503677}
   m_SizeDelta: {x: 1000, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &92017685
@@ -833,8 +833,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 607183061}
   m_HandleRect: {fileID: 607183060}
   m_Direction: 2
-  m_Value: 1.0000021
-  m_Size: 0.9429951
+  m_Value: 1.0000643
+  m_Size: 0.8749751
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1101,8 +1101,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1747395036}
   m_HandleRect: {fileID: 1747395035}
   m_Direction: 0
-  m_Value: 1.0000072
-  m_Size: 0.98299474
+  m_Value: 1.0002226
+  m_Size: 0.9120896
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2123,7 +2123,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc98d17df8c21a8428d196d1713b2e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  divAmt: 50
   img: {fileID: 92017685}
   simViewport: {fileID: 809863419}
   simScrollRect: {fileID: 279447986}
@@ -2132,7 +2131,6 @@ MonoBehaviour:
   viewMatRedGreen: {fileID: 2100000, guid: f2c383d1c6eec65428b91e90149eddf7, type: 2}
   viewMatGrayscale: {fileID: 2100000, guid: 732bdc91a7e140445be5e73c1a5e4b62, type: 2}
   viewMatSpectrum: {fileID: 2100000, guid: fc3b32c2f10d406469869aeb28913b13, type: 2}
-  modulateRate: 5
   dockSys: {fileID: 633321694}
   pulldownSim: {fileID: 1386279580}
   pulldownView: {fileID: 590785640}
@@ -2147,7 +2145,6 @@ MonoBehaviour:
   waveScene:
     obstacleLayer: 10
     inputLayer: 9
-    impedanceLayer: 11
     drawShader: {fileID: 4800000, guid: 206f13be4be0a9d4cb945903bfa96ce9, type: 3}
     drawShaderAdd: {fileID: 4800000, guid: 8f97e039e98125e4e867dec07d57ce94, type: 3}
     simMaterial: {fileID: 2100000, guid: 4cfea5524a48b094caec7f113ed0ef9a, type: 2}
@@ -2185,6 +2182,9 @@ MonoBehaviour:
   - name: Collimation and Reflection
     asset: {fileID: 0}
     resourceName: Reflectedcollimation
+  - name: Mirage
+    asset: {fileID: 0}
+    resourceName: Mirage
 --- !u!224 &534669907
 RectTransform:
   m_ObjectHideFlags: 0

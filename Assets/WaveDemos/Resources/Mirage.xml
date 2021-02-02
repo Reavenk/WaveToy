@@ -1,0 +1,171 @@
+<wavscene>
+  <comment>A wave moving through medium(s) with a gradient of IOR gradually curves. The curve bends more when the travel direction against the gradient grain is more glancing.</comment>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-4.413518" />
+    <param name="Y" value="1.702444" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Square" />
+    <param name="Radius" value="9.5523" />
+    <param name="Radius2" value="1.165896" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="False" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Impedance" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="0.7" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-4.428703" />
+    <param name="Y" value="0.01372546" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Square" />
+    <param name="Radius" value="9.586796" />
+    <param name="Radius2" value="0.5336685" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="False" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Impedance" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="0.6" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-4.373518" />
+    <param name="Y" value="-0.8893346" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Square" />
+    <param name="Radius" value="10.33703" />
+    <param name="Radius2" value="0.404898" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="False" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Impedance" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="0.5" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-4.392408" />
+    <param name="Y" value="-1.646777" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Square" />
+    <param name="Radius" value="9.732232" />
+    <param name="Radius2" value="0.3840357" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="False" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Impedance" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="0.4" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-4.415" />
+    <param name="Y" value="-2.386036" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Square" />
+    <param name="Radius" value="10.13503" />
+    <param name="Radius2" value="0.3532264" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="False" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Impedance" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="0.3" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-0.04870218" />
+    <param name="Y" value="-3.170481" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Square" />
+    <param name="Radius" value="5.108961" />
+    <param name="Radius2" value="0.429842" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="False" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Impedance" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="0.2" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-0.1323456" />
+    <param name="Y" value="-3.791112" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Square" />
+    <param name="Radius" value="5.237372" />
+    <param name="Radius2" value="0.3925911" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="False" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Impedance" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="0.1" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+  <actor>
+    <param name="Enabled" value="True" />
+    <param name="X" value="-3.23753" />
+    <param name="Y" value="1.491852" />
+    <param name="Rotation" value="0" />
+    <param name="Shape" value="Ellipse" />
+    <param name="Radius" value="0.05" />
+    <param name="Radius2" value="0.05" />
+    <param name="Thickness" value="0.1" />
+    <param name="Squared" value="True" />
+    <param name="Fill" value="Filled" />
+    <param name="Type" value="Emitter" />
+    <param name="Phase" value="0" />
+    <param name="Power" value="1" />
+    <param name="Freq" value="1" />
+    <param name="IOR" value="1" />
+    <param name="Angle1" value="-180" />
+    <param name="Angle2" value="180" />
+    <param name="Radiation" value="AC" />
+    <param name="Emission" value="Reflective" />
+  </actor>
+</wavscene>
